@@ -34,7 +34,7 @@ module.exports = {
 
 	"rules": {
 		// Possible Errors
-		"no-console": [2, {allow: ["warn", "error"]}], // sometimes console warnings or console errors are helpful, but console.log probably shouldn't be checked into source control (?)
+		"no-console": [2, {allow: ["warn", "error", "info"]}], // sometimes console warnings or console errors are helpful, but console.log probably shouldn't be checked into source control (?)
 		"no-constant-condition": 2,
 		"no-debugger": 2,
 		"no-dupe-args": 2,
