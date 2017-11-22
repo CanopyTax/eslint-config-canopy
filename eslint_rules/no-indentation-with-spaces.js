@@ -1,5 +1,5 @@
 /**
- * @fileoverview Rule to check for tabs inside a file
+ * @fileoverview Rule to check for indentation with spaces inside a file
  * @author Joel Denning
  */
 
