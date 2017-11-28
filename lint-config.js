@@ -67,7 +67,7 @@ module.exports = {
 		"indent": [0, "tab"], // Enforces a specific number of tab indentations :(
 		"no-trailing-spaces": 0, // Somewhat militant, especially for empty lines that sometimes have indentation that matches the line above it.
 		"no-mixed-spaces-and-tabs": 2,
-		"no-indentation-with-spaces": 2, // Our custom rule. See the eslint_rules directory of this project
+		"no-tabs": 2,
 
 		// ES2015 rules
 		"constructor-super": 2,
