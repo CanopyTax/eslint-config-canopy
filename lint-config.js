@@ -19,6 +19,7 @@ module.exports = {
 			"templateStrings": false,
 			"unicodeCodePointEscapes": false,
 			"jsx": true,
+      "legacyDecorators": true,
 		},
 	},
 
