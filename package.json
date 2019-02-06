@@ -5,5 +5,7 @@
   "main": "lint-config.js",
   "repository": "git@canopy.githost.io:front-end/canopy-eslint.git",
   "license": "Apache-2.0",
-  "dependencies": {}
+  "dependencies": {
+    "eslint-plugin-react-hooks": "^1.0.0"
+  }
 }
