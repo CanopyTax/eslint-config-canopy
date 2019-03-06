@@ -30,11 +30,16 @@ module.exports = {
   "env": {
     "browser": true,     // browser global variables.
     "jasmine": true,
+    "jest": true,
     "es6": true,
   },
 
   "globals": {
-    "SystemJS": true
+    "SystemJS": "readonly",
+    "module": "readonly",
+    "global": "writeable",
+    "__webpack_public_path__": "writeable",
+    "__webpack_require__": "readonly",
   },
 
   "rules": {
@@ -66,7 +71,7 @@ module.exports = {
 
     // Variables
     "no-shadow-restricted-names": 2,
-    "no-undef": 0, // Doesn't work with class property initializers very well. Is overall pretty noisy and can be annoying because it doesn't detect all uses of things like state={} and this.state.
+    "no-undef": 2,
     "no-unused-vars": 0, // Finds things like arguments that aren't used but later arguments are used. Or an event handler where the event object isn't used.
     "no-use-before-define": 0, // Doesn't allow you to define functions at the bottom of a file
 
