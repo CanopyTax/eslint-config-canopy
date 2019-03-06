@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-canopy",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "A standard eslint configuration for Canopy frontend developers",
   "main": "lint-config.js",
   "repository": "git@canopy.githost.io:front-end/canopy-eslint.git",
