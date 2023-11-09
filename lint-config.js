@@ -1,9 +1,10 @@
 module.exports = {
   "plugins": [
-    "react-hooks"
+    "react-hooks", "react", "@typescript-eslint"
   ],
 
-  "parser": "babel-eslint",
+  "extends": ["plugin:@typescript-eslint/recommended"],
+  "parser": "@typescript-eslint/parser",
 
   "parserOptions": {
     "sourceType": "module",
@@ -44,6 +45,7 @@ module.exports = {
 
   "rules": {
     "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
 
     // Possible Errors
     "no-console": [2, {allow: ["warn", "error", "info"]}], // sometimes console warnings or console errors are helpful, but console.log probably shouldn't be checked into source control (?)
@@ -87,5 +89,9 @@ module.exports = {
     "no-dupe-class-members": 2,
     "no-duplicate-imports": 2,
     "no-this-before-super": 2,
+
+    // Typescript
+    "@typescript-eslint/no-unused-vars": "warn",
+    "@typescript-eslint/no-explicit-any": 0
   },
 }
