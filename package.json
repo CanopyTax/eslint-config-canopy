@@ -1,11 +1,17 @@
 {
   "name": "eslint-config-canopy",
-  "version": "2.3.0",
+  "version": "3.0.0",
   "description": "A standard eslint configuration for Canopy frontend developers",
   "main": "lint-config.js",
   "repository": "git@canopy.githost.io:front-end/canopy-eslint.git",
   "license": "Apache-2.0",
   "dependencies": {
-    "eslint-plugin-react-hooks": "^1.0.0"
+    "@typescript-eslint/eslint-plugin": "^6.10.0",
+    "@typescript-eslint/parser": "^6.10.0",
+    "@babel/preset-typescript": "^7.23.2",
+    "eslint-plugin-react-hooks": "^4.6.0"
+  },
+  "peerDependencies": {
+    "typescript": "~5.0.0"
   }
 }
