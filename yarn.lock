@@ -794,6 +794,7 @@ __metadata:
     eslint-plugin-react: ^7.37.4
     eslint-plugin-react-hooks: ^5.1.0
     eslint-plugin-unused-imports: ^4.1.4
+    globals: ^15.14.0
     typescript: ^5.7.3
   peerDependencies:
     eslint: ">=9.0.0"
@@ -1153,6 +1154,13 @@ __metadata:
   version: 14.0.0
   resolution: "globals@npm:14.0.0"
   checksum: 534b8216736a5425737f59f6e6a5c7f386254560c9f41d24a9227d60ee3ad4a9e82c5b85def0e212e9d92162f83a92544be4c7fd4c902cb913736c10e08237ac
+  languageName: node
+  linkType: hard
+
+"globals@npm:^15.14.0":
+  version: 15.14.0
+  resolution: "globals@npm:15.14.0"
+  checksum: fa993433a01bf4a118904fbafbcff34db487fce83f73da75fb4a8653afc6dcd72905e6208c49bab307ff0980928273d0ecd1cfc67e1a4782dabfbd92c234ab68
   languageName: node
   linkType: hard
 

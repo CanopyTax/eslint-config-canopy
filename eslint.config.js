@@ -3,6 +3,7 @@ import reactPlugin from 'eslint-plugin-react';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import unusedImports from 'eslint-plugin-unused-imports';
+import globals from 'globals';
 
 export default [
   {
@@ -18,52 +19,18 @@ export default [
         },
       },
       globals: {
-        // Browser globals
-        window: 'readonly',
-        document: 'readonly',
-        navigator: 'readonly',
-        location: 'readonly',
-        history: 'readonly',
-        localStorage: 'readonly',
-        sessionStorage: 'readonly',
-        console: 'readonly',
-        setTimeout: 'readonly',
-        clearTimeout: 'readonly',
-        setInterval: 'readonly',
-        clearInterval: 'readonly',
-        CustomEvent: 'readonly',
-        HTMLElement: 'readonly',
-        HTMLDivElement: 'readonly',
-        HTMLInputElement: 'readonly',
-        File: 'readonly',
-        FileList: 'readonly',
-        Blob: 'readonly',
-        FormData: 'readonly',
-        Headers: 'readonly',
-        URL: 'readonly',
-        URLSearchParams: 'readonly',
-        UIEvent: 'readonly',
-        DragEvent: 'readonly',
-        close: 'readonly',
-        React: 'readonly',
-
+        ...globals.browser,
+        ...globals.jest,
+        ...globals.node,
+        ...globals.nodeBuiltin,
+        ...globals.esnext,
+        ...globals.worker,
         // SystemJS globals
         SystemJS: 'readonly',
         module: 'readonly',
         global: 'writable',
         __webpack_public_path__: 'writable',
         __webpack_require__: 'readonly',
-
-        // Jest globals
-        jest: 'readonly',
-        expect: 'readonly',
-        test: 'readonly',
-        describe: 'readonly',
-        beforeEach: 'readonly',
-        afterEach: 'readonly',
-        beforeAll: 'readonly',
-        afterAll: 'readonly',
-        it: 'readonly',
       },
     },
     files: ['**/*.{js,jsx,ts,tsx}'],
