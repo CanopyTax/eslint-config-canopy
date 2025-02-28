@@ -5,8 +5,10 @@ import tsParser from '@typescript-eslint/parser';
 import unusedImports from 'eslint-plugin-unused-imports';
 import importPlugin from 'eslint-plugin-import';
 import globals from 'globals';
+import eslint from '@eslint/js';
 
 export default [
+  eslint.configs.recommended,
   {
     // Global settings
     languageOptions: {
