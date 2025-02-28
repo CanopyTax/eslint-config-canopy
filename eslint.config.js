@@ -3,9 +3,12 @@ import reactPlugin from 'eslint-plugin-react';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import unusedImports from 'eslint-plugin-unused-imports';
+import importPlugin from 'eslint-plugin-import';
 import globals from 'globals';
+import eslint from '@eslint/js';
 
 export default [
+  eslint.configs.recommended,
   {
     // Global settings
     languageOptions: {
@@ -41,6 +44,7 @@ export default [
       'react': reactPlugin,
       '@typescript-eslint': tsPlugin,
       'unused-imports': unusedImports,
+      'import': importPlugin,
     },
     // Rules configuration
     rules: {
@@ -48,8 +52,9 @@ export default [
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
 
-      // Unused imports
+      // Imports
       'unused-imports/no-unused-imports': 'warn',
+      'import/no-duplicates': 'error',
 
       // Possible Errors
       'no-console': ['error', { allow: ['warn', 'error', 'info'] }],
@@ -81,17 +86,10 @@ export default [
       'no-unused-vars': 'off',
       'no-use-before-define': 'off',
 
-      // Stylistic
-      'indent': [0, 'tab'],
-      'no-trailing-spaces': 'off',
-      'no-mixed-spaces-and-tabs': 'error',
-      'no-tabs': 'error',
-
       // ES2015 rules
       'constructor-super': 'error',
       'no-const-assign': 'error',
       'no-dupe-class-members': 'error',
-      'no-duplicate-imports': 'error',
       'no-this-before-super': 'error',
 
       // TypeScript
