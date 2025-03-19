@@ -1,14 +1,15 @@
-import reactHooksPlugin from 'eslint-plugin-react-hooks';
-import reactPlugin from 'eslint-plugin-react';
-import tsPlugin from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
+import jsPlugin from '@eslint/js';
+import tsPlugin from 'typescript-eslint';
+import globals from 'globals';
 import unusedImports from 'eslint-plugin-unused-imports';
 import importPlugin from 'eslint-plugin-import';
-import globals from 'globals';
-import eslint from '@eslint/js';
+import reactPlugin from 'eslint-plugin-react';
+import reactHooksPlugin from 'eslint-plugin-react-hooks';
 
 export default [
-  eslint.configs.recommended,
+  jsPlugin.configs.recommended,
+  ...tsPlugin.configs.recommended,
   {
     // Global settings
     languageOptions: {
@@ -42,15 +43,17 @@ export default [
     plugins: {
       'react-hooks': reactHooksPlugin,
       'react': reactPlugin,
-      '@typescript-eslint': tsPlugin,
       'unused-imports': unusedImports,
       'import': importPlugin,
     },
     // Rules configuration
     rules: {
+      'no-useless-escape': 'off',
+      'no-extra-boolean-cast': 'off',
+
       // React Hooks rules
       'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/exhaustive-deps': 'warn',
+      'react-hooks/exhaustive-deps': 'error',
 
       // Imports
       'unused-imports/no-unused-imports': 'warn',
@@ -94,7 +97,8 @@ export default [
 
       // TypeScript
       '@typescript-eslint/no-unused-vars': 'warn',
-      '@typescript-eslint/no-explicit-any': 'off'
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unused-expressions': 'off',
     },
   },
 ];
