@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-canopy",
-  "version": "4.1.0",
+  "version": "5.0.0",
   "description": "A standard eslint configuration for Canopy frontend developers",
   "main": "eslint.config.js",
   "type": "module",
@@ -13,7 +13,8 @@
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-unused-imports": "^4.1.4",
-    "globals": "^15.14.0"
+    "globals": "^15.14.0",
+    "typescript-eslint": "^8.26.0"
   },
   "peerDependencies": {
     "eslint": ">=9.0.0",
