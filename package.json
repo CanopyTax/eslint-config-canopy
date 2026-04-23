@@ -1,9 +1,21 @@
 {
   "name": "eslint-config-canopy",
-  "version": "5.0.1",
+  "version": "5.1.0",
   "description": "A standard eslint configuration for Canopy frontend developers",
   "main": "eslint.config.js",
   "type": "module",
+  "exports": {
+    ".": "./eslint.config.js",
+    "./plugin": "./plugin/index.js"
+  },
+  "files": [
+    "eslint.config.js",
+    "plugin"
+  ],
+  "scripts": {
+    "lint": "eslint .",
+    "test": "node --test plugin/rules/*.test.js"
+  },
   "repository": "git@canopy.githost.io:front-end/canopy-eslint.git",
   "license": "Apache-2.0",
   "dependencies": {
