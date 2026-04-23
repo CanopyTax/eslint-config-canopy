@@ -22,7 +22,7 @@ export default {
     schema: [],
     messages: {
       cpInTw:
-        '`{{token}}` is a Canopy class and must not be passed through tw() — it will be prefixed and break. Use `always("{{token}}", tw(...))` or a template literal.',
+        '`{{token}}` is a Canopy class and must not be passed through tw() — it will be prefixed and break. Keep `cp-*` outside tw(), e.g. `always("{{token}}", tw(...))` or `` `{{token}} ${tw(...)}` ``.',
     },
   },
 
@@ -61,6 +61,12 @@ export default {
           return;
         case 'ArrayExpression':
           node.elements.forEach(walkInsideTw);
+          return;
+        case 'BinaryExpression':
+          if (node.operator === '+') {
+            walkInsideTw(node.left);
+            walkInsideTw(node.right);
+          }
           return;
         default:
           return;

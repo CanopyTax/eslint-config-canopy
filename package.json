@@ -6,6 +6,7 @@
   "type": "module",
   "exports": {
     ".": "./eslint.config.js",
+    "./eslint.config.js": "./eslint.config.js",
     "./plugin": "./plugin/index.js"
   },
   "files": [
@@ -14,7 +15,7 @@
   ],
   "scripts": {
     "lint": "eslint .",
-    "test": "node --test plugin/rules/*.test.js"
+    "test": "node --test"
   },
   "repository": "git@canopy.githost.io:front-end/canopy-eslint.git",
   "license": "Apache-2.0",

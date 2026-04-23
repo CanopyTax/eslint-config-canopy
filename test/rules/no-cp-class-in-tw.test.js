@@ -1,5 +1,5 @@
 import { RuleTester } from 'eslint';
-import rule from './no-cp-class-in-tw.js';
+import rule from '../../plugin/rules/no-cp-class-in-tw.js';
 
 const ruleTester = new RuleTester({
   languageOptions: {
@@ -16,7 +16,7 @@ ruleTester.run('no-cp-class-in-tw', rule, {
     { code: `tw("flex flex-col gap-4")` },
     { code: `always("cp-body", tw("flex"))` },
     { code: `always("cp-body flex")` },
-    // CSS-var bracket notation should NOT trip — `cp-` is not preceded by start/space
+    // CSS-var bracket notation should NOT trip — the char before `cp-` is `-`, which the regex excludes
     { code: `tw("bg-[var(--cp-color-app-border)]")` },
     { code: `tw("text-[var(--cp-color-app-secondary-text)] italic")` },
     // Substring-only matches should be ignored
@@ -64,6 +64,15 @@ ruleTester.run('no-cp-class-in-tw', rule, {
     // template literal
     {
       code: 'tw(`cp-body ${x}`)',
+      errors: [{ messageId: 'cpInTw', data: { token: 'cp-body' } }],
+    },
+    // String concatenation inside tw()
+    {
+      code: `tw("cp-body " + extra)`,
+      errors: [{ messageId: 'cpInTw', data: { token: 'cp-body' } }],
+    },
+    {
+      code: `tw("flex " + "cp-body")`,
       errors: [{ messageId: 'cpInTw', data: { token: 'cp-body' } }],
     },
     // Tailwind variant-prefixed tokens
