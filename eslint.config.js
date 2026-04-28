@@ -6,6 +6,7 @@ import unusedImports from 'eslint-plugin-unused-imports';
 import importPlugin from 'eslint-plugin-import';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
+import canopyPlugin from './plugin/index.js';
 
 export default [
   jsPlugin.configs.recommended,
@@ -45,6 +46,7 @@ export default [
       'react': reactPlugin,
       'unused-imports': unusedImports,
       'import': importPlugin,
+      'canopy': canopyPlugin,
     },
     // Rules configuration
     rules: {
@@ -94,6 +96,9 @@ export default [
       'no-const-assign': 'error',
       'no-dupe-class-members': 'error',
       'no-this-before-super': 'error',
+
+      // Canopy
+      'canopy/no-cp-class-in-tw': 'warn',
 
       // TypeScript
       '@typescript-eslint/no-unused-vars': 'warn',
