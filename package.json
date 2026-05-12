@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-canopy",
-  "version": "5.1.0",
+  "version": "5.2.0",
   "description": "A standard eslint configuration for Canopy frontend developers",
   "main": "eslint.config.js",
   "type": "module",
