@@ -31,17 +31,85 @@ ruleTester.run('no-cp-class-in-tw', rule, {
   invalid: [
     {
       code: `tw("cp-body flex")`,
-      errors: [{ messageId: 'cpInTw', data: { token: 'cp-body' } }],
+      errors: [
+        {
+          messageId: 'cpInTw',
+          data: { token: 'cp-body' },
+          suggestions: [
+            { messageId: 'moveToAlways', output: `always("cp-body", tw("flex"))` },
+          ],
+        },
+      ],
     },
     {
       code: `tw("flex cp-body")`,
-      errors: [{ messageId: 'cpInTw', data: { token: 'cp-body' } }],
+      errors: [
+        {
+          messageId: 'cpInTw',
+          data: { token: 'cp-body' },
+          suggestions: [
+            { messageId: 'moveToAlways', output: `always("cp-body", tw("flex"))` },
+          ],
+        },
+      ],
     },
     {
+      // all tokens are cp-* -> always("...") with no leftover tw() call
       code: `tw("cp-body-sm cp-wt-semibold")`,
       errors: [
-        { messageId: 'cpInTw', data: { token: 'cp-body-sm' } },
-        { messageId: 'cpInTw', data: { token: 'cp-wt-semibold' } },
+        {
+          messageId: 'cpInTw',
+          data: { token: 'cp-body-sm' },
+          suggestions: [
+            { messageId: 'moveToAlways', output: `always("cp-body-sm cp-wt-semibold")` },
+          ],
+        },
+        {
+          messageId: 'cpInTw',
+          data: { token: 'cp-wt-semibold' },
+          suggestions: [
+            { messageId: 'moveToAlways', output: `always("cp-body-sm cp-wt-semibold")` },
+          ],
+        },
+      ],
+    },
+    {
+      // mixed cp-* + tailwind -> always("cp-*", tw("..."))
+      code: `tw("cp-wt-semibold mb-1")`,
+      errors: [
+        {
+          messageId: 'cpInTw',
+          data: { token: 'cp-wt-semibold' },
+          suggestions: [
+            { messageId: 'moveToAlways', output: `always("cp-wt-semibold", tw("mb-1"))` },
+          ],
+        },
+      ],
+    },
+    {
+      // multiple string-literal args are flattened across the suggestion
+      code: `tw("cp-body p-2", "cp-caption m-1")`,
+      errors: [
+        {
+          messageId: 'cpInTw',
+          data: { token: 'cp-body' },
+          suggestions: [
+            {
+              messageId: 'moveToAlways',
+              output: `always("cp-body cp-caption", tw("p-2 m-1"))`,
+            },
+          ],
+        },
+        {
+          messageId: 'cpInTw',
+          data: { token: 'cp-caption' },
+          suggestions: [
+            {
+              messageId: 'moveToAlways',
+              output: `always("cp-body cp-caption", tw("p-2 m-1"))`,
+            },
+          ],
+        },
       ],
     },
     {
