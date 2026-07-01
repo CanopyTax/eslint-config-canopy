@@ -51,3 +51,5 @@ export default [
 | Rule | Description |
 | --- | --- |
 | [`canopy/no-cp-class-in-tw`](docs/rules/no-cp-class-in-tw.md) | Disallows Canopy `cp-*` class tokens inside `tw(...)` calls. Tailwind's `tw()` helper applies a per-app prefix to every token, so `tw("cp-body")` produces a broken class like `fo-cp-body`. Use `always("cp-body", tw(...))` or place the `cp-*` class outside `tw()`. Offers a suggestion fix for flat string-literal calls. |
+| [`canopy/no-class-ternary`](docs/rules/no-class-ternary.md) | Disallows a class-selecting ternary (both branches non-empty) in a JSX `className` attribute or a `tw(...)` / `always(...)` call. Use `toggle(cond, whenTrue, whenFalse)` instead. Auto-fixable. |
+| [`canopy/no-conditional-class`](docs/rules/no-conditional-class.md) | Disallows an empty-branch ternary (`cond ? "x" : ""`) or a `cond && "x"` short-circuit in a JSX `className` attribute or a `tw(...)` / `always(...)` call. Use `maybe(cond, "x")` instead. Auto-fixable. |
