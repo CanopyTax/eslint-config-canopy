@@ -1,7 +1,10 @@
+import { isClassnameContainerCall } from '../utils/classname-evaluation.js';
+
 // Match cp-* at string start or after any non-word-non-hyphen character.
 // Excluding `-` preserves CSS custom properties like `--cp-color-*` inside
 // arbitrary-value brackets (e.g. `bg-[var(--cp-color-app-border)]`).
 const CP_TOKEN_RE = /(?:^|[^\w-])(cp-[A-Za-z0-9_-]+)/g;
+const TW_CONTAINER_NAMES = new Set(['tw']);
 
 function findCpTokens(str) {
   if (typeof str !== 'string') return [];
@@ -110,7 +113,7 @@ export default {
 
     return {
       CallExpression(node) {
-        if (node.callee.type !== 'Identifier' || node.callee.name !== 'tw') return;
+        if (!isClassnameContainerCall(node, TW_CONTAINER_NAMES)) return;
         const suggest = buildAlwaysSuggestion(node);
         node.arguments.forEach((arg) => walkInsideTw(arg, suggest));
       },

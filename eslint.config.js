@@ -99,6 +99,8 @@ export default [
 
       // Canopy
       'canopy/no-cp-class-in-tw': 'warn',
+      'canopy/no-class-ternary': 'warn',
+      'canopy/no-conditional-class': 'warn',
 
       // TypeScript
       '@typescript-eslint/no-unused-vars': 'warn',
