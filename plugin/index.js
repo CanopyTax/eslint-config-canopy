@@ -1,4 +1,5 @@
 import noCpClassInTw from './rules/no-cp-class-in-tw.js';
+import noHardcodedColor from './rules/no-hardcoded-color.js';
 
 const plugin = {
   meta: {
@@ -6,6 +7,7 @@ const plugin = {
   },
   rules: {
     'no-cp-class-in-tw': noCpClassInTw,
+    'no-hardcoded-color': noHardcodedColor,
   },
 };
 
