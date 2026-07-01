@@ -51,3 +51,4 @@ export default [
 | Rule | Description |
 | --- | --- |
 | [`canopy/no-cp-class-in-tw`](docs/rules/no-cp-class-in-tw.md) | Disallows Canopy `cp-*` class tokens inside `tw(...)` calls. Tailwind's `tw()` helper applies a per-app prefix to every token, so `tw("cp-body")` produces a broken class like `fo-cp-body`. Use `always("cp-body", tw(...))` or place the `cp-*` class outside `tw()`. Offers a suggestion fix for flat string-literal calls. |
+| [`canopy/no-hardcoded-color`](docs/rules/no-hardcoded-color.md) | Disallows hardcoded hex colors in JSX `style` prop values (`'#000'`) and Tailwind arbitrary-value class strings (`text-[#000]`). Use Canopy design tokens (`var(--cp-color-*)`) instead. See the [color palette](https://storybook.canopytax.com/?path=/docs/design-color-palette--docs). |
