@@ -27,9 +27,16 @@ export default [
 ];
 ```
 
-## Plugin rules (opt-in)
+## Plugin rules
 
-This package also ships a `canopy` ESLint plugin via the `eslint-config-canopy/plugin` sub-export. It is not enabled by default — register it and pick the rules you want:
+This package ships a `canopy` ESLint plugin with Canopy-specific rules. Most of them
+are **already enabled at `warn`** by the shared config exported from this package, so
+extending `eslint-config-canopy` turns them on. See the table below for what each one
+reports, and `docs/rules/` for the details.
+
+The plugin is also exposed on its own via the `eslint-config-canopy/plugin` sub-export,
+so you can register it directly to change a severity, disable a rule, or opt into one
+that ships off by default:
 
 ```javascript
 import canopyConfig from "eslint-config-canopy";
