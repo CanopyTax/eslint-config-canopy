@@ -6,6 +6,7 @@ import noToLocaleStringForDates from './rules/no-tolocalestring-for-dates.js';
 import noHardcodedFontSize from './rules/no-hardcoded-font-size.js';
 import noLicenseCheckForFeatureGating from './rules/no-license-check-for-feature-gating.js';
 import requireStaleTimeInUseQuery from './rules/require-staletime-in-usequery.js';
+import requireSubscribeCleanup from './rules/require-subscribe-cleanup.js';
 
 const plugin = {
   meta: {
@@ -20,6 +21,7 @@ const plugin = {
     'no-hardcoded-font-size': noHardcodedFontSize,
     'no-license-check-for-feature-gating': noLicenseCheckForFeatureGating,
     'require-staletime-in-usequery': requireStaleTimeInUseQuery,
+    'require-subscribe-cleanup': requireSubscribeCleanup,
   },
 };
 

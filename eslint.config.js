@@ -106,6 +106,7 @@ export default [
       'canopy/no-hardcoded-font-size': 'warn',
       'canopy/no-license-check-for-feature-gating': 'warn',
       'canopy/require-staletime-in-usequery': 'warn',
+      'canopy/require-subscribe-cleanup': 'warn',
 
       // TypeScript
       '@typescript-eslint/no-unused-vars': 'warn',
