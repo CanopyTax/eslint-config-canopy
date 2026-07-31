@@ -12,8 +12,20 @@ correctly and re-render on change.
 ## Rule Details
 
 This rule reports **reads** of these three properties on `window`, in every form
-they appear: dot access, optional chaining, computed access with a string
-literal, and destructuring off `window`.
+they appear: dot access, optional chaining, computed access with a string literal,
+and destructuring off `window` — including string and computed-string keys, and
+destructuring assignment without a declaration.
+
+Only the ambient browser global counts. A local or parameter named `window`
+shadowing it is a different object and is not reported, so jsdom and fake-window
+test setups are unaffected.
+
+Compound and logical assignment (`+=`, `||=`, `??=`) and `++` read the current
+value before storing, so they are reported. Only plain `=` and `delete` are pure
+writes.
+
+Not detected: `globalThis`, `self`, and `top` equivalents, and
+`Object.assign(window, ...)`. These are false negatives rather than noise.
 
 Writes are deliberately **not** reported. Assigning these globals is how app
 bootstraps, `cp-client-auth` itself, and test mocks populate them in the first

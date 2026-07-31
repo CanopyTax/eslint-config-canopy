@@ -43,6 +43,10 @@ ruleTester.run('no-window-auth-globals', rule, {
     { code: `const c = window.constructor;` },
     { code: `const h = window.hasOwnProperty;` },
     { code: `const { valueOf } = window;` },
+    // A local binding named `window` is not the browser global.
+    { code: `function f(window) { return window.tenant; }` },
+    { code: `const window = mockWindow; const t = window.tenant;` },
+    { code: `{ let window = m; const t = window.tenant; }` },
   ],
   invalid: [
     {
@@ -94,6 +98,44 @@ ruleTester.run('no-window-auth-globals', rule, {
       code: `const { betas, tenant } = window;`,
       errors: [
         { messageId: 'windowAuthGlobal', data: { global: 'betas', replacement: BETAS } },
+        {
+          messageId: 'windowAuthGlobal',
+          data: { global: 'tenant', replacement: USER_TENANT },
+        },
+      ],
+    },
+    {
+      code: `const { loggedInUser } = window;`,
+      errors: [
+        {
+          messageId: 'windowAuthGlobal',
+          data: { global: 'loggedInUser', replacement: USER_TENANT },
+        },
+      ],
+    },
+    // String and computed-string keys are the same read.
+    {
+      code: `const { "tenant": t } = window;`,
+      errors: [
+        {
+          messageId: 'windowAuthGlobal',
+          data: { global: 'tenant', replacement: USER_TENANT },
+        },
+      ],
+    },
+    {
+      code: `const { ["tenant"]: t } = window;`,
+      errors: [
+        {
+          messageId: 'windowAuthGlobal',
+          data: { global: 'tenant', replacement: USER_TENANT },
+        },
+      ],
+    },
+    // Destructuring assignment, without a declaration
+    {
+      code: `({ tenant } = window);`,
+      errors: [
         {
           messageId: 'windowAuthGlobal',
           data: { global: 'tenant', replacement: USER_TENANT },

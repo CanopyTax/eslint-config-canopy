@@ -13,6 +13,14 @@ function propertyName(node) {
   return node.property.type === 'Identifier' ? node.property.name : undefined;
 }
 
+// `{ tenant }`, `{ "tenant": t }` and `{ ["tenant"]: t }` are the same read.
+function patternKeyName(prop) {
+  if (prop.type !== 'Property') return undefined;
+  if (prop.key.type === 'Identifier' && !prop.computed) return prop.key.name;
+  if (prop.key.type === 'Literal') return prop.key.value;
+  return undefined;
+}
+
 // Writes are how cp-client-auth, app bootstraps and test mocks populate these
 // globals in the first place, so only reads are violations. `delete` counts as a
 // write: bootstrap and test teardown use it to unset them.
@@ -45,6 +53,30 @@ export default {
   },
 
   create(context) {
+    const { sourceCode } = context;
+
+    // Only the ambient browser global counts. Tests and non-browser code shadow
+    // `window` with a local of the same name, and that is a different object.
+    function isBrowserWindow(identifier) {
+      for (let scope = sourceCode.getScope(identifier); scope; scope = scope.upper) {
+        const variable = scope.set.get('window');
+        if (variable) return variable.defs.length === 0;
+      }
+      return true;
+    }
+
+    // Shared by `const { tenant } = window` and `({ tenant } = window)`.
+    function reportPattern(pattern, source) {
+      if (source?.type !== 'Identifier' || source.name !== 'window') return;
+      if (!isBrowserWindow(source)) return;
+
+      for (const prop of pattern.properties) {
+        const name = patternKeyName(prop);
+        if (!name || !Object.hasOwn(REPLACEMENTS, name)) continue;
+        report(prop, name);
+      }
+    }
+
     function report(node, global) {
       context.report({
         node,
@@ -59,19 +91,20 @@ export default {
         const name = propertyName(node);
         if (!name || !Object.hasOwn(REPLACEMENTS, name)) return;
         if (isWrite(node)) return;
+        if (!isBrowserWindow(node.object)) return;
         report(node, name);
       },
 
       // `const { betas, tenant } = window` reads each named global.
       VariableDeclarator(node) {
         if (node.id.type !== 'ObjectPattern') return;
-        if (node.init?.type !== 'Identifier' || node.init.name !== 'window') return;
+        reportPattern(node.id, node.init);
+      },
 
-        for (const prop of node.id.properties) {
-          if (prop.type !== 'Property' || prop.key.type !== 'Identifier') continue;
-          if (!Object.hasOwn(REPLACEMENTS, prop.key.name)) continue;
-          report(prop, prop.key.name);
-        }
+      // `({ tenant } = window)` is the same read without a declaration.
+      AssignmentExpression(node) {
+        if (node.left.type !== 'ObjectPattern') return;
+        reportPattern(node.left, node.right);
       },
     };
   },
