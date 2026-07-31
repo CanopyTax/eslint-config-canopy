@@ -13,14 +13,27 @@ const ruleTester = new RuleTester({
 
 ruleTester.run('no-hardcoded-font-size', rule, {
   valid: [
+    // The named Tailwind scale is themeable — the Canopy theme maps these to the
+    // right sizes — so it is intentionally allowed.
+    { code: `tw("text-sm");` },
+    { code: `tw("text-xs");` },
+    { code: `tw("text-base");` },
+    { code: `tw("flex text-xs gap-2");` },
+    { code: `always("text-base");` },
+    { code: `tw("md:text-lg");` },
+    { code: `tw("text-9xl");` },
+    { code: `const C = () => <p className="text-sm">x</p>;` },
+    { code: `const C = () => <p className={tw("text-sm")}>x</p>;` },
     // `text-*` is overloaded: colours, alignment and decoration all share the prefix.
     { code: `tw("text-red-500");` },
     { code: `tw("text-white");` },
     { code: `tw("text-[var(--cp-color-app-text)]");` },
     { code: `tw("text-left text-center text-right");` },
     { code: `tw("text-ellipsis text-nowrap");` },
-    { code: `const C = () => <p className="text-red-500">x</p>;` },
-    // The Canopy typography scale is the correct way to size text.
+    // An arbitrary value that is not a bare length is not a hardcoded size.
+    { code: `tw("text-[color:red]");` },
+    { code: `tw("text-[length:var(--x)]");` },
+    // The Canopy typography scale
     { code: `always("cp-body");` },
     { code: `always("cp-body-sm cp-wt-semibold");` },
     { code: `const C = () => <p className="cp-body">x</p>;` },
@@ -36,49 +49,38 @@ ruleTester.run('no-hardcoded-font-size', rule, {
     { code: `const C = () => <p style={{ marginTop: "13px" }}>x</p>;` },
   ],
   invalid: [
-    // Tailwind size scale
-    {
-      code: `tw("text-sm");`,
-      errors: [{ messageId: 'tailwindFontSize', data: { token: 'text-sm' } }],
-    },
-    {
-      code: `tw("flex text-xs gap-2");`,
-      errors: [{ messageId: 'tailwindFontSize', data: { token: 'text-xs' } }],
-    },
-    {
-      code: `always("text-base");`,
-      errors: [{ messageId: 'tailwindFontSize', data: { token: 'text-base' } }],
-    },
-    // Variant-prefixed tokens still resolve to a size
-    {
-      code: `tw("md:text-lg");`,
-      errors: [{ messageId: 'tailwindFontSize', data: { token: 'text-lg' } }],
-    },
-    // className attribute
-    {
-      code: `const C = () => <p className="text-sm">x</p>;`,
-      errors: [{ messageId: 'tailwindFontSize', data: { token: 'text-sm' } }],
-    },
-    // Arbitrary length values
+    // Arbitrary lengths bypass the theme entirely — the real target of this rule.
     {
       code: `tw("text-[13px]");`,
-      errors: [{ messageId: 'tailwindFontSize', data: { token: 'text-[13px]' } }],
+      errors: [{ messageId: 'arbitraryFontSize', data: { token: 'text-[13px]' } }],
     },
-    // A tw() call inside className must be reported exactly once, not once per visitor.
     {
-      code: `const C = () => <p className={tw("text-sm")}>x</p>;`,
-      errors: [{ messageId: 'tailwindFontSize', data: { token: 'text-sm' } }],
+      code: `tw("text-[1.25rem]");`,
+      errors: [{ messageId: 'arbitraryFontSize', data: { token: 'text-[1.25rem]' } }],
     },
+    {
+      code: `tw("flex text-[12px] gap-2");`,
+      errors: [{ messageId: 'arbitraryFontSize', data: { token: 'text-[12px]' } }],
+    },
+    {
+      code: `tw("md:text-[13px]");`,
+      errors: [{ messageId: 'arbitraryFontSize', data: { token: 'text-[13px]' } }],
+    },
+    {
+      code: `const C = () => <p className="text-[13px]">x</p>;`,
+      errors: [{ messageId: 'arbitraryFontSize', data: { token: 'text-[13px]' } }],
+    },
+    // Reported exactly once, not once per visitor.
     {
       code: `const C = () => <p className={tw("text-[var(--cp-color-app-text)] text-[12px]")}>x</p>;`,
-      errors: [{ messageId: 'tailwindFontSize', data: { token: 'text-[12px]' } }],
+      errors: [{ messageId: 'arbitraryFontSize', data: { token: 'text-[12px]' } }],
     },
     // Nested non-container helpers inside tw() are still walked, once.
     {
-      code: `tw("flex", maybe(open, "text-sm"));`,
-      errors: [{ messageId: 'tailwindFontSize', data: { token: 'text-sm' } }],
+      code: `tw("flex", maybe(open, "text-[13px]"));`,
+      errors: [{ messageId: 'arbitraryFontSize', data: { token: 'text-[13px]' } }],
     },
-    // Literal fontSize in a style prop
+    // A literal fontSize in a style prop cannot be themed at all.
     {
       code: `const C = () => <p style={{ fontSize: "13px" }}>x</p>;`,
       errors: [{ messageId: 'inlineFontSize', data: { value: '13px' } }],

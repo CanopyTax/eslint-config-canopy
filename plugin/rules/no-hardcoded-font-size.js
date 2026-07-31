@@ -1,23 +1,9 @@
 import { isClassnameContainerCall, isClassNameAttribute } from '../utils/classname-evaluation.js';
 
-// Tailwind's `text-` prefix is overloaded across size, colour, alignment and
-// decoration, so sizes are matched from an explicit list rather than by prefix.
-const TEXT_SIZES = new Set([
-  'text-xs',
-  'text-sm',
-  'text-base',
-  'text-lg',
-  'text-xl',
-  'text-2xl',
-  'text-3xl',
-  'text-4xl',
-  'text-5xl',
-  'text-6xl',
-  'text-7xl',
-  'text-8xl',
-  'text-9xl',
-]);
-
+// The named Tailwind scale (`text-sm`, `text-lg`, …) is deliberately NOT reported.
+// Those tokens resolve through the Tailwind theme, so the Canopy theme can map them
+// onto the correct type scale. An arbitrary value cannot: `text-[13px]` pins a
+// literal length that no theme can reach.
 const ARBITRARY_TEXT_RE = /^text-\[(.+)\]$/;
 const CSS_LENGTH_RE = /^-?(?:\d*\.)?\d+(?:px|rem|em|pt|pc|in|cm|mm|ex|ch|vh|vw|vmin|vmax|%)$/;
 
@@ -25,18 +11,31 @@ const CSS_LENGTH_RE = /^-?(?:\d*\.)?\d+(?:px|rem|em|pt|pc|in|cm|mm|ex|ch|vh|vw|v
 // size, so they are not hardcoded values.
 const CSS_WIDE_KEYWORDS = new Set(['inherit', 'initial', 'unset', 'revert', 'revert-layer']);
 
+// Drop Tailwind variant prefixes (`md:`, `hover:`) and the `!important` marker.
+// Only colons *outside* bracketed values separate variants, so `text-[color:red]`
+// and `[&:hover]:text-[13px]` must not be split on their inner colons.
 function stripVariants(token) {
-  // Drop Tailwind variant prefixes (`md:`, `hover:`) and the `!important` marker.
-  const withoutVariants = token.slice(token.lastIndexOf(':') + 1);
-  return withoutVariants.startsWith('!') ? withoutVariants.slice(1) : withoutVariants;
+  let depth = 0;
+  let lastSeparator = -1;
+
+  for (let i = 0; i < token.length; i++) {
+    const char = token[i];
+    if (char === '[') depth++;
+    else if (char === ']') depth--;
+    else if (char === ':' && depth === 0) lastSeparator = i;
+  }
+
+  const bare = token.slice(lastSeparator + 1);
+  return bare.startsWith('!') ? bare.slice(1) : bare;
 }
 
 function fontSizeToken(rawToken) {
   const token = stripVariants(rawToken);
-  if (TEXT_SIZES.has(token)) return token;
 
   const arbitrary = ARBITRARY_TEXT_RE.exec(token);
-  // `text-[var(--cp-color-*)]` and `text-[#fff]` are colours, not sizes.
+  // Only a bare length is a hardcoded size. `text-[var(--cp-color-*)]`,
+  // `text-[#fff]` and `text-[color:red]` are colours; `text-[length:var(--x)]`
+  // defers to a custom property.
   if (arbitrary && CSS_LENGTH_RE.test(arbitrary[1])) return token;
 
   return undefined;
@@ -47,15 +46,15 @@ export default {
     type: 'problem',
     docs: {
       description:
-        'Disallow font sizes set outside the Canopy typography scale — Tailwind `text-*` size classes and literal `fontSize` values in style props.',
+        'Disallow font sizes that no theme can reach — Tailwind arbitrary lengths such as `text-[13px]` and literal `fontSize` values in style props. The named scale (`text-sm`) is themeable and is allowed.',
       url: 'https://github.com/CanopyTax/eslint-config-canopy/blob/master/docs/rules/no-hardcoded-font-size.md',
     },
     schema: [],
     messages: {
-      tailwindFontSize:
-        '`{{token}}` sets a font size outside the Canopy typography scale. Use a `cp-*` typography class instead.',
+      arbitraryFontSize:
+        '`{{token}}` pins a literal font size that the Tailwind theme cannot map. Use a themeable size class such as `text-sm`, or a `cp-*` typography class.',
       inlineFontSize:
-        '`fontSize: {{value}}` hardcodes a font size outside the Canopy typography scale. Use a `cp-*` typography class instead.',
+        '`fontSize: {{value}}` hardcodes a font size that no theme can reach. Use a themeable size class such as `text-sm`, or a `cp-*` typography class.',
     },
   },
 
@@ -65,7 +64,7 @@ export default {
       for (const raw of value.split(/\s+/).filter(Boolean)) {
         const token = fontSizeToken(raw);
         if (token) {
-          context.report({ node, messageId: 'tailwindFontSize', data: { token } });
+          context.report({ node, messageId: 'arbitraryFontSize', data: { token } });
         }
       }
     }
