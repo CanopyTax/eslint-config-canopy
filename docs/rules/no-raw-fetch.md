@@ -69,13 +69,27 @@ distribution shows the problem plainly:
 | `backend` | 2 | **No** — server-side |
 | browser microfrontends | ~18 | Yes |
 
-**Disable this rule in `frontend-node-server`, `fetcher`, and any other
-server-side package.** In browser microfrontends the remaining ~18 files are
-genuine and worth fixing.
+Because two thirds of its raw findings come from packages that should not enable it
+at all, **this rule is not turned on by the shared `eslint-config-canopy` config.**
+It is the only rule in the plugin that ships off by default.
 
-Because two thirds of its raw findings come from packages that should not enable
-it at all, this rule is the most configuration-dependent in the plugin. Enable it
-per-repo rather than globally.
+Browser microfrontends opt in explicitly:
+
+```javascript
+import canopyConfig from "eslint-config-canopy";
+import canopyPlugin from "eslint-config-canopy/plugin";
+
+export default [
+  ...canopyConfig,
+  {
+    plugins: { canopy: canopyPlugin },
+    rules: { "canopy/no-raw-fetch": "warn" },
+  },
+];
+```
+
+In browser code the ~18 genuine files are worth fixing. Do not enable it in
+`frontend-node-server`, `fetcher`, `backend`, or any other server-side package.
 
 ## When Not To Use It
 

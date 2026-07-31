@@ -14,14 +14,21 @@ function resolvesToGlobal(scope, name) {
 }
 
 function isHostFetchMember(callee) {
-  return (
-    callee.type === 'MemberExpression' &&
-    !callee.computed &&
-    callee.object.type === 'Identifier' &&
-    HOST_OBJECTS.has(callee.object.name) &&
-    callee.property.type === 'Identifier' &&
-    callee.property.name === 'fetch'
-  );
+  if (callee.type !== 'MemberExpression') return false;
+  if (callee.object.type !== 'Identifier' || !HOST_OBJECTS.has(callee.object.name)) return false;
+
+  const property = callee.computed
+    ? callee.property.type === 'Literal' && callee.property.value
+    : callee.property.type === 'Identifier' && callee.property.name;
+
+  return property === 'fetch';
+}
+
+// A type-only import produces no runtime request, so it is not an axios client.
+function isTypeOnlyImport(node) {
+  if (node.importKind === 'type') return true;
+  if (node.specifiers.length === 0) return false;
+  return node.specifiers.every((spec) => spec.importKind === 'type');
 }
 
 export default {
@@ -58,10 +65,11 @@ export default {
           return;
         }
 
-        // `require("axios")`
+        // `require("axios")`, unless `require` is a local binding.
         if (
           callee.type === 'Identifier' &&
           callee.name === 'require' &&
+          resolvesToGlobal(sourceCode.getScope(node), 'require') &&
           node.arguments[0]?.type === 'Literal' &&
           node.arguments[0].value === 'axios'
         ) {
@@ -69,8 +77,28 @@ export default {
         }
       },
 
+      // `await import("axios")`
+      ImportExpression(node) {
+        if (node.source?.type === 'Literal' && node.source.value === 'axios') {
+          context.report({ node, messageId: 'axiosImport' });
+        }
+      },
+
       ImportDeclaration(node) {
-        if (node.source.value === 'axios') {
+        if (node.source.value !== 'axios') return;
+        if (isTypeOnlyImport(node)) return;
+        context.report({ node, messageId: 'axiosImport' });
+      },
+
+      // `export { default as axios } from "axios"` and `export * from "axios"`
+      ExportNamedDeclaration(node) {
+        if (node.source?.value === 'axios' && node.exportKind !== 'type') {
+          context.report({ node, messageId: 'axiosImport' });
+        }
+      },
+
+      ExportAllDeclaration(node) {
+        if (node.source?.value === 'axios' && node.exportKind !== 'type') {
           context.report({ node, messageId: 'axiosImport' });
         }
       },

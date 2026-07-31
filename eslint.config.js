@@ -108,7 +108,10 @@ export default [
       'canopy/require-staletime-in-usequery': 'warn',
       'canopy/require-subscribe-cleanup': 'warn',
       'canopy/require-subscribe-error-handler': 'warn',
-      'canopy/no-raw-fetch': 'warn',
+      // `canopy/no-raw-fetch` is deliberately NOT enabled here. fetcher is a browser
+      // client, and this config is shared with Node packages where fetch() is
+      // correct — two thirds of the rule's findings come from such packages. Browser
+      // microfrontends should opt in per-repo.
 
       // TypeScript
       '@typescript-eslint/no-unused-vars': 'warn',

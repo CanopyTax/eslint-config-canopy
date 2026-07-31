@@ -1,5 +1,30 @@
 import { RuleTester } from 'eslint';
+import tsParser from '@typescript-eslint/parser';
 import rule from '../../plugin/rules/no-raw-fetch.js';
+
+// A type-only import needs the TypeScript parser to produce `importKind: 'type'`.
+const tsRuleTester = new RuleTester({
+  languageOptions: {
+    ecmaVersion: 2022,
+    sourceType: 'module',
+    parser: tsParser,
+  },
+});
+
+tsRuleTester.run('no-raw-fetch (type imports)', rule, {
+  valid: [
+    // A type import issues no request at runtime.
+    { code: `import type { AxiosError } from "axios";` },
+    { code: `import { type AxiosResponse } from "axios";` },
+    { code: `import type AxiosDefault from "axios";` },
+  ],
+  invalid: [
+    {
+      code: `import axios, { type AxiosError } from "axios";`,
+      errors: [{ messageId: 'axiosImport' }],
+    },
+  ],
+});
 
 const ruleTester = new RuleTester({
   languageOptions: {
@@ -51,6 +76,23 @@ ruleTester.run('no-raw-fetch', rule, {
       code: `window.fetch("/api/x");`,
       errors: [{ messageId: 'rawFetch' }],
     },
+    // The other host objects reach the same global.
+    {
+      code: `globalThis.fetch("/api/x");`,
+      errors: [{ messageId: 'rawFetch' }],
+    },
+    {
+      code: `self.fetch("/api/x");`,
+      errors: [{ messageId: 'rawFetch' }],
+    },
+    {
+      code: `global.fetch("/api/x");`,
+      errors: [{ messageId: 'rawFetch' }],
+    },
+    {
+      code: `globalThis["fetch"]("/api/x");`,
+      errors: [{ messageId: 'rawFetch' }],
+    },
     // axios imports
     {
       code: `import axios from "axios";`,
@@ -62,6 +104,19 @@ ruleTester.run('no-raw-fetch', rule, {
     },
     {
       code: `const axios = require("axios");`,
+      errors: [{ messageId: 'axiosImport' }],
+    },
+    // Dynamic import and re-export reach the same client.
+    {
+      code: `const a = await import("axios");`,
+      errors: [{ messageId: 'axiosImport' }],
+    },
+    {
+      code: `export { default as axios } from "axios";`,
+      errors: [{ messageId: 'axiosImport' }],
+    },
+    {
+      code: `export * from "axios";`,
       errors: [{ messageId: 'axiosImport' }],
     },
   ],
