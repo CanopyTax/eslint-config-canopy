@@ -2,9 +2,15 @@
 // absent: Luxon's DateTime exposes a method of that exact name as the *correct*
 // Canopy call, and numbers use it for thousands separators, so flagging it would
 // be wrong far more often than right.
-const DATE_ONLY_METHODS = new Set(['toLocaleDateString', 'toLocaleTimeString']);
+//
+// Each method maps to the preset that replaces it — telling someone formatting a
+// time to use a date preset would make the message actively misleading.
+const DATE_ONLY_METHODS = new Map([
+  ['toLocaleDateString', 'DateTime.DATE_SHORT'],
+  ['toLocaleTimeString', 'DateTime.TIME_SIMPLE'],
+]);
 
-const SUGGESTED = 'DateTime.fromISO(value).toLocaleString(DateTime.DATE_SHORT)';
+const INTL_PRESET = 'DateTime.DATE_SHORT';
 
 function isIntlDateTimeFormat(callee) {
   return (
@@ -40,8 +46,9 @@ export default {
     },
     schema: [],
     messages: {
-      localeDateMethod: `\`.{{method}}()\` is a JS \`Date\` method whose output varies by browser and locale, bypassing the Canopy date presets. Use Luxon, e.g. \`${SUGGESTED}\`.`,
-      intlDateTimeFormat: `\`Intl.DateTimeFormat\` bypasses the Canopy date presets. Use Luxon, e.g. \`${SUGGESTED}\`.`,
+      localeDateMethod:
+        '`.{{method}}()` is a JS `Date` method whose output varies by browser and locale, bypassing the Canopy date presets. Use Luxon, e.g. `DateTime.fromJSDate(value).toLocaleString({{preset}})`.',
+      intlDateTimeFormat: `\`Intl.DateTimeFormat\` bypasses the Canopy date presets. Use Luxon, e.g. \`DateTime.fromISO(value).toLocaleString(${INTL_PRESET})\`.`,
     },
   },
 
@@ -60,10 +67,11 @@ export default {
         callee.property.type === 'Identifier' &&
         DATE_ONLY_METHODS.has(callee.property.name)
       ) {
+        const method = callee.property.name;
         context.report({
           node,
           messageId: 'localeDateMethod',
-          data: { method: callee.property.name },
+          data: { method, preset: DATE_ONLY_METHODS.get(method) },
         });
       }
     }

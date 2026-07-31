@@ -39,29 +39,36 @@ ruleTester.run('no-tolocalestring-for-dates', rule, {
   invalid: [
     {
       code: `date.toLocaleDateString();`,
-      errors: [{ messageId: 'localeDateMethod', data: { method: 'toLocaleDateString' } }],
+      errors: [{ messageId: 'localeDateMethod', data: { method: 'toLocaleDateString', preset: 'DateTime.DATE_SHORT' } }],
     },
     {
       code: `new Date().toLocaleDateString();`,
-      errors: [{ messageId: 'localeDateMethod', data: { method: 'toLocaleDateString' } }],
+      errors: [{ messageId: 'localeDateMethod', data: { method: 'toLocaleDateString', preset: 'DateTime.DATE_SHORT' } }],
     },
     {
       code: `d.toLocaleDateString("en-US", { month: "short" });`,
-      errors: [{ messageId: 'localeDateMethod', data: { method: 'toLocaleDateString' } }],
+      errors: [{ messageId: 'localeDateMethod', data: { method: 'toLocaleDateString', preset: 'DateTime.DATE_SHORT' } }],
     },
+    // A time method must not be told to use a *date* preset. Asserted on the
+    // rendered message, since that is the text the developer actually reads.
     {
       code: `date.toLocaleTimeString();`,
-      errors: [{ messageId: 'localeDateMethod', data: { method: 'toLocaleTimeString' } }],
+      errors: [
+        {
+          message:
+            '`.toLocaleTimeString()` is a JS `Date` method whose output varies by browser and locale, bypassing the Canopy date presets. Use Luxon, e.g. `DateTime.fromJSDate(value).toLocaleString(DateTime.TIME_SIMPLE)`.',
+        },
+      ],
     },
     // Optional chaining is still a call
     {
       code: `date?.toLocaleDateString();`,
-      errors: [{ messageId: 'localeDateMethod', data: { method: 'toLocaleDateString' } }],
+      errors: [{ messageId: 'localeDateMethod', data: { method: 'toLocaleDateString', preset: 'DateTime.DATE_SHORT' } }],
     },
     // Inside JSX
     {
       code: `const C = () => <span>{item.created_at.toLocaleDateString()}</span>;`,
-      errors: [{ messageId: 'localeDateMethod', data: { method: 'toLocaleDateString' } }],
+      errors: [{ messageId: 'localeDateMethod', data: { method: 'toLocaleDateString', preset: 'DateTime.DATE_SHORT' } }],
     },
     // Intl.DateTimeFormat, with and without `new`
     {

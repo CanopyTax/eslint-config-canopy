@@ -8,7 +8,8 @@ standardises date display on Luxon `DateTime` with a shared set of presets.
 ## Rule Details
 
 This rule reports calls to `.toLocaleDateString()` and `.toLocaleTimeString()`,
-and use of `Intl.DateTimeFormat` for formatting.
+and construction of an `Intl.DateTimeFormat`. The message names the preset that
+replaces the specific method — `DATE_SHORT` for a date, `TIME_SIMPLE` for a time.
 
 **`.toLocaleString()` is deliberately not reported.** Luxon's `DateTime` exposes
 a method of exactly that name, and calling it with a preset —
@@ -54,8 +55,18 @@ the Canopy codebase; `DateTime.TIME_SIMPLE` covers times.
 ## Why `resolvedOptions()` is exempt
 
 `Intl.DateTimeFormat().resolvedOptions()` reads the environment's timezone or
-locale rather than formatting a value, and no date preset replaces it. Calls
-whose result feeds `resolvedOptions()` are not reported.
+locale rather than formatting a value, and no date preset replaces it.
+
+The exemption is **syntactic and immediate**: it applies only when
+`.resolvedOptions()` is called directly on the construction, as in
+`Intl.DateTimeFormat().resolvedOptions().timeZone`. Storing the formatter first
+(`const f = new Intl.DateTimeFormat(); f.resolvedOptions()`) is still reported,
+since the rule does not track values across statements. Use an
+`eslint-disable-next-line` in that case.
+
+Note also that the rule reports the *construction* of an `Intl.DateTimeFormat`,
+so uses such as `formatToParts` and `formatRange` are reported too even though no
+single Canopy preset replaces them.
 
 ## When Not To Use It
 
