@@ -37,6 +37,11 @@ ruleTester.run('require-staletime-in-usequery', rule, {
     // A different hook
     { code: `useMutation({ mutationFn: fn });` },
     { code: `useSomethingElse({ queryKey, queryFn });` },
+    // The member-callee path, satisfied
+    { code: `reactQuery.useQuery({ queryKey, queryFn, staleTime: 1000 });` },
+    // Apollo's signature puts the document first, so there is no options literal
+    // in position 0 and nothing to check.
+    { code: `useQuery(GET_DOGS, { variables: { breed } });` },
   ],
   invalid: [
     {
@@ -58,6 +63,11 @@ ruleTester.run('require-staletime-in-usequery', rule, {
     // A computed key that is not staleTime does not satisfy the requirement.
     {
       code: `useQuery({ queryKey, queryFn, ["enabled"]: true });`,
+      errors: [{ messageId: 'missingStaleTime', data: { hook: 'useQuery' } }],
+    },
+    // The member-callee path reports too.
+    {
+      code: `reactQuery.useQuery({ queryKey, queryFn });`,
       errors: [{ messageId: 'missingStaleTime', data: { hook: 'useQuery' } }],
     },
   ],

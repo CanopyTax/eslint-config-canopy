@@ -42,6 +42,26 @@ useQuery(clientQueries.getClient(id));
 useQuery({ ...clientQueries.getClient(id), enabled: !!id });
 ```
 
+## Why the rule matches on name rather than import
+
+`useQuery` is not unique to React Query — urql and tRPC expose hooks of the same
+name, and a `someObject.useQuery({...})` call matches the member form. Keying the
+rule to a React Query import would remove that risk.
+
+It is not worth it here. Of the 272 `useQuery` import sites across the Canopy repos,
+**267 resolve through a local re-export path** — `src/react-query`, or a relative
+`../react-query`. Exactly **one** imports `@tanstack/react-query` directly, and
+**four** import from `fetcher!sofe`. Keying on the published package would therefore
+silence 271 of 272 call sites, and an allowlist would have to enumerate per-repo
+relative paths that differ between repos.
+
+Meanwhile the competing libraries are absent: `@apollo/client`, `urql`, `@trpc/react`
+and `react-query` each appear in **zero** files across the Canopy repos. Apollo's
+signature would not collide anyway, since it passes the document first
+(`useQuery(GET_DOGS, {...})`) and leaves no options literal in position 0.
+
+If a repo does adopt one of those libraries, disable this rule there.
+
 ## Current status in the Canopy ecosystem
 
 Across 228 files using these hooks there is **one** violation. Canopy code almost
