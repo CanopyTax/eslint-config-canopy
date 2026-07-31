@@ -12,10 +12,23 @@ This rule reports `useEffect` and `useLayoutEffect` callbacks that contain a
 
 Two deliberate limits keep it quiet and accurate:
 
-**Any returned value satisfies the rule.** If the effect returns something, the
-rule says nothing — it does not try to prove the returned function actually
-unsubscribes. Attempting that proof is where false positives come from, and it
-is unnecessary: most Canopy effects already unsubscribe correctly.
+**Any plausibly-callable return satisfies the rule.** The rule does not try to
+prove the returned function actually unsubscribes — attempting that proof is where
+false positives come from, and it is unnecessary, since most Canopy effects already
+unsubscribe correctly. So `return cleanup` and `return makeCleanup(sub)` both count.
+
+But React accepts only a function as a cleanup, so a returned literal, object,
+array, `undefined`, or `void 0` cannot be one and does not count. That distinction
+matters: treating any return as cleanup let a guard clause hide a real leak.
+
+```js
+// Reported. `return null` is a guard clause, not a cleanup, and the subscription
+// below it is never torn down. This shape was live in communications-ui.
+useEffect(() => {
+  if (shouldDeleteDraft) return null;
+  createDraft(id, payload).subscribe(onNext, onError);
+}, [shouldDeleteDraft]);
+```
 
 **Nested functions are not searched.** A `.subscribe()` inside an event handler
 or a helper declared in the effect has a different lifetime, and the cleanup
@@ -87,14 +100,29 @@ useEffect(() => {
 }, []);
 ```
 
-A bare `return;` used as a guard clause does not count as cleanup, since it
+A bare `return;` used as a guard clause does not count as cleanup either, since it
 returns no function.
+
+A concise arrow body that is itself the subscribe call — `useEffect(() =>
+obs.subscribe(onNext), [])` — is reported. It returns the Subscription, and React
+warns that an effect may return only a function or undefined, so it is both a leak
+and a React error.
+
+The effect callback is unwrapped through TypeScript casts, so
+`useEffect((() => { ... }) as any, [])` is still checked.
+
+Not detected: a computed call (`obs['subscribe'](fn)`).
 
 ## Current status in the Canopy ecosystem
 
 Of the 493 files that combine `useEffect` with `.subscribe(`, this rule reports
-**39 effects across 38 files**. The remaining 455 already clean up correctly, so
-the rule aligns with how most Canopy code is already written.
+**40 effects across 39 files**. The remaining 454 already clean up correctly, so the
+rule aligns with how most Canopy code is already written.
+
+The traversal has been exercised against 767 real effect bodies across 445 files
+under both the default and TypeScript parsers with no revisits or crashes. The
+largest real effect body is 357 nodes; espree's own parser overflows on deep nesting
+before the walk does.
 
 ## When Not To Use It
 

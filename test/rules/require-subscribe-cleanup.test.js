@@ -43,6 +43,13 @@ ruleTester.run('require-subscribe-cleanup', rule, {
         return () => sub.unsubscribe();
       }, [id]);`,
     },
+    // A returned identifier or call may well be a function, so it counts.
+    {
+      code: `useEffect(() => {
+        const sub = obs.subscribe(onNext);
+        return makeCleanup(sub);
+      }, []);`,
+    },
     // No subscription in the effect at all
     { code: `useEffect(() => { doThing(); }, []);` },
     { code: `useEffect(() => { setState(1); }, []);` },
@@ -52,9 +59,6 @@ ruleTester.run('require-subscribe-cleanup', rule, {
     // The subscribe happens inside a function called by the effect, so its lifetime
     // is not visible here.
     { code: `useEffect(() => { fetchTasks(); }, []);` },
-    // A concise arrow body returns the subscription, so the effect does return
-    // something; the rule stays conservative and silent.
-    { code: `useEffect(() => obs.subscribe(onNext), []);` },
     // A subscribe inside a nested handler is not the effect's own subscription
     {
       code: `useEffect(() => {
@@ -100,6 +104,43 @@ ruleTester.run('require-subscribe-cleanup', rule, {
       code: `React.useEffect(() => {
         obs.subscribe(onNext);
       }, []);`,
+      errors: [{ messageId: 'missingCleanup' }],
+    },
+    // A guard clause returning a non-function is not a cleanup. React requires a
+    // function, so `return null` cannot be one — this shape hid a real leak in
+    // communications-ui.
+    {
+      code: `useEffect(() => {
+        if (shouldDelete) return null;
+        createDraft(id, payload).subscribe(onNext, onError);
+      }, [shouldDelete]);`,
+      errors: [{ messageId: 'missingCleanup' }],
+    },
+    {
+      code: `useEffect(() => {
+        if (skip) return false;
+        obs.subscribe(onNext);
+      }, [skip]);`,
+      errors: [{ messageId: 'missingCleanup' }],
+    },
+    {
+      code: `useEffect(() => {
+        obs.subscribe(onNext);
+        return 42;
+      }, []);`,
+      errors: [{ messageId: 'missingCleanup' }],
+    },
+    {
+      code: `useEffect(() => {
+        obs.subscribe(onNext);
+        return { done: true };
+      }, []);`,
+      errors: [{ messageId: 'missingCleanup' }],
+    },
+    // A concise arrow body returns the Subscription itself, which React warns
+    // about — an effect may return only a function or undefined.
+    {
+      code: `useEffect(() => obs.subscribe(onNext), []);`,
       errors: [{ messageId: 'missingCleanup' }],
     },
     // useLayoutEffect has the same lifecycle contract
