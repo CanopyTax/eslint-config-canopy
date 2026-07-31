@@ -21,8 +21,22 @@ export default {
   },
 
   create(context) {
+    const { sourceCode } = context;
+
     // Local binding names for cp-client-auth's hasLicense, including aliases.
     const licenseBindings = new Set();
+
+    // True only when the identifier resolves to an `import` declaration, so a
+    // same-named parameter or local variable is not mistaken for the import.
+    function resolvesToImport(identifier) {
+      for (let scope = sourceCode.getScope(identifier); scope; scope = scope.upper) {
+        const variable = scope.set.get(identifier.name);
+        if (variable) {
+          return variable.defs.some((def) => def.type === 'ImportBinding');
+        }
+      }
+      return false;
+    }
 
     const TEST_PARENTS = new Set([
       'IfStatement',
@@ -45,7 +59,8 @@ export default {
           parent = parent.parent;
           continue;
         }
-        if (parent.type === 'LogicalExpression') return true;
+        // `&&` and `||` gate; `??` only supplies a fallback value.
+        if (parent.type === 'LogicalExpression') return parent.operator !== '??';
         if (TEST_PARENTS.has(parent.type)) return parent.test === current;
         return false;
       }
@@ -69,6 +84,9 @@ export default {
         if (node.callee.type !== 'Identifier') return;
         if (!licenseBindings.has(node.callee.name)) return;
         if (!isConditionalPosition(node)) return;
+        // A parameter or local of the same name shadows the import and is a
+        // different function, so resolve the reference before reporting.
+        if (!resolvesToImport(node.callee)) return;
 
         context.report({ node, messageId: 'licenseFeatureGate' });
       },

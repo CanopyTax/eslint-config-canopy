@@ -11,7 +11,8 @@ This rule reports `hasLicense()` **only when its result is used as a condition**
 
 - the test of an `if`, ternary, `while`, or `do...while`
 - an operand of `&&` or `||`, wherever that expression ends up — `cond && <Feature />`
-  gates rendering just as much as an `if` does
+  gates rendering just as much as an `if` does. `??` is **not** included: it supplies
+  a fallback value rather than gating.
 - either of the above behind a `!`
 
 Reading license state for any other purpose is legitimate and is **not** reported.
@@ -22,6 +23,13 @@ The rule keys on the **import**, not the bare name: only `hasLicense` imported
 from `cp-client-auth` (or `cp-client-auth!sofe`) is considered, including aliased
 imports. At least one Canopy app defines its own `hasLicense` helper with a
 different signature, and that one is left alone.
+
+The identifier is also resolved through scope, so a parameter or local variable
+named `hasLicense` shadowing the import is not reported.
+
+Not currently detected: a namespace or default import used as a member call
+(`import * as auth from "cp-client-auth!sofe"; auth.hasLicense(...)`), and
+`hasLicense?.(...)`. Both are false negatives rather than false positives.
 
 Examples of **incorrect** code for this rule:
 
