@@ -10,8 +10,9 @@ change will ever reach.
 This rule reports:
 
 1. Tailwind **arbitrary** font sizes inside `tw(...)`, `always(...)`, or a JSX
-   `className` — an arbitrary value that parses as a bare CSS length, such as
-   `text-[13px]` or `text-[1.25rem]`.
+   `className` — an arbitrary value that parses as a CSS length, such as
+   `text-[13px]` or `text-[1.25rem]`. Tailwind's explicit `length:` type hint is
+   handled too, so `text-[length:13px]` is reported.
 2. A `fontSize` property in a `style={{ ... }}` object whose value is a literal
    number, length, or percentage.
 
@@ -59,9 +60,9 @@ tw("text-red-500");
 tw("text-[var(--cp-color-app-text)]");
 tw("text-left text-center");
 
-// An arbitrary value that is not a bare length
+// An arbitrary value that is not a literal length
 tw("text-[color:red]");
-tw("text-[length:var(--x)]");
+tw("text-[length:var(--x)]"); // the hint is present but the value defers to a variable
 
 // Defers to context instead of pinning a size
 <p style={{ fontSize: "inherit" }}>x</p>;

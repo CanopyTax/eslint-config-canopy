@@ -58,6 +58,15 @@ ruleTester.run('no-hardcoded-font-size', rule, {
       code: `tw("text-[1.25rem]");`,
       errors: [{ messageId: 'arbitraryFontSize', data: { token: 'text-[1.25rem]' } }],
     },
+    // Tailwind's `length:` type hint still pins a literal size.
+    {
+      code: `tw("text-[length:13px]");`,
+      errors: [{ messageId: 'arbitraryFontSize', data: { token: 'text-[length:13px]' } }],
+    },
+    {
+      code: `tw("text-[length:1.5rem]");`,
+      errors: [{ messageId: 'arbitraryFontSize', data: { token: 'text-[length:1.5rem]' } }],
+    },
     {
       code: `tw("flex text-[12px] gap-2");`,
       errors: [{ messageId: 'arbitraryFontSize', data: { token: 'text-[12px]' } }],

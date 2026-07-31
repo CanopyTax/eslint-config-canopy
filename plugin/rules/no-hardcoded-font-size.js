@@ -33,12 +33,16 @@ function fontSizeToken(rawToken) {
   const token = stripVariants(rawToken);
 
   const arbitrary = ARBITRARY_TEXT_RE.exec(token);
-  // Only a bare length is a hardcoded size. `text-[var(--cp-color-*)]`,
-  // `text-[#fff]` and `text-[color:red]` are colours; `text-[length:var(--x)]`
-  // defers to a custom property.
-  if (arbitrary && CSS_LENGTH_RE.test(arbitrary[1])) return token;
+  if (!arbitrary) return undefined;
 
-  return undefined;
+  // Tailwind allows an explicit `length:` type hint, so `text-[length:13px]` pins a
+  // literal size just as `text-[13px]` does. Strip the hint before testing.
+  // Everything else stays out: `text-[var(--cp-color-*)]`, `text-[#fff]` and
+  // `text-[color:red]` are colours, and `text-[length:var(--x)]` still defers to a
+  // custom property because what follows the hint is not a bare length.
+  const value = arbitrary[1].replace(/^length:/, '');
+
+  return CSS_LENGTH_RE.test(value) ? token : undefined;
 }
 
 export default {
