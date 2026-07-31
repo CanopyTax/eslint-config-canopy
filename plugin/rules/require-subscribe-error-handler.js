@@ -12,7 +12,9 @@ function isObserverWithErrorKey(node) {
     // A spread may carry `error`, and its contents are not visible here.
     if (prop.type === 'SpreadElement') return true;
     if (prop.type !== 'Property') continue;
-    if (prop.key.type === 'Identifier' && prop.key.name === 'error') return true;
+    // `{ [error]: h }` reads a variable named error rather than declaring the
+    // handler key, so a computed identifier must not satisfy the check.
+    if (prop.key.type === 'Identifier' && !prop.computed && prop.key.name === 'error') return true;
     if (prop.key.type === 'Literal' && prop.key.value === 'error') return true;
   }
 

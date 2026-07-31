@@ -7,8 +7,15 @@ crash of that subscription, so the stream stops without notice.
 
 ## Rule Details
 
-This rule reports `.subscribe(...)` calls that supply an **inline** value handler
-but no error handler. An error handler counts when it is:
+This rule reports two shapes:
+
+1. A **positional** call whose value handler is an **inline** function
+   (`obs.subscribe((x) => use(x))`) with no error handler.
+2. An **observer object** with a `next` key but no `error` key
+   (`obs.subscribe({ next: onNext })`). This path inspects the object's keys, so it
+   applies even when the values are references.
+
+An error handler counts when it is:
 
 - a second positional argument — `obs.subscribe(onNext, handleError)`
 - an `error` key in an observer object — `obs.subscribe({ next, error })`
@@ -19,7 +26,6 @@ Examples of **incorrect** code for this rule:
 ```js
 /*eslint canopy/require-subscribe-error-handler: "error"*/
 
-obs.subscribe(onNext);
 obs.subscribe((x) => setState(x));
 obs.pipe(map(f)).subscribe((x) => use(x));
 getClient(id).subscribe((client) => setClient(client));
@@ -60,17 +66,18 @@ expressions.
 
 Without type information the rule cannot prove a receiver is an Observable, and
 several unrelated libraries expose a `.subscribe(listener)` method with no
-error-handler concept. Where those libraries are passed an **inline** function they
-are still reported:
+error-handler concept. Where such a library is passed an **inline** function it is
+still reported.
 
-| Shape | Count | Library |
-| --- | --- | --- |
-| `someStore.subscribe(fn)` | 7 | Zustand / Redux |
-| `animate.subscribe(fn)`, `dragControls.subscribe(fn)` | 4 | framer-motion |
+In practice this is nearly a non-issue. Sweeping the ecosystem source, exactly **one**
+reported finding is a non-RxJS receiver: a Zustand store at
+`workflow-builder-ui/src/builder/hooks/use-workflow-auto-save.hook.ts:105`. Use a
+targeted `eslint-disable-next-line` there.
 
-Pusher is fully excluded, both the literal and the variable channel-name forms.
-For the store and motion cases, use a targeted `eslint-disable-next-line` or
-disable the rule for the files that own those subscriptions.
+Pusher is fully excluded, both the literal and the variable channel-name forms, and
+`useEngagementStore.subscribe(selector, listener)` is skipped because it passes two
+arguments. framer-motion's `animate.subscribe(...)` appears only inside compiled
+`module.js` bundles, never in source, so it is not a source-level concern.
 
 Also not reported, all under-reporting rather than noise: an observer object plus a
 second argument (`obs.subscribe({ next }, extra)`), a computed call
@@ -81,8 +88,10 @@ are no such call sites in the ecosystem today.
 ## Current status in the Canopy ecosystem
 
 Across 1,084 files that call `.subscribe(`, this rule reports **446 findings in
-273 files**. Roughly 11 of those are the non-RxJS shapes above, so the great
-majority are real: observables whose errors are being dropped.
+273 files**. That sweep covers `.js/.jsx/.ts/.tsx` under the Canopy repos and
+excludes `node_modules`, `dist`, `build`, and `coverage`; including compiled output
+raises the totals by roughly 30 files and introduces vendored bundle noise. Essentially all of these are real — observables whose errors are being
+dropped — with the single store exception noted above.
 
 That volume is the reason this rule sits at the top of the stack. It is accurate,
 but adopting it at `error` across a repo means a large cleanup. Starting at `warn`

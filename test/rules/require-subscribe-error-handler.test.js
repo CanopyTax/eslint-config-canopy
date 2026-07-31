@@ -57,9 +57,15 @@ ruleTester.run('require-subscribe-error-handler', rule, {
       code: `getClient(id).subscribe((client) => setClient(client));`,
       errors: [{ messageId: 'missingErrorHandler' }],
     },
-    // Observer object with no error key
+    // Observer object with no error key. Note the observer path checks the *keys*,
+    // so a reference value like `onNext` is still reported here.
     {
       code: `obs.subscribe({ next: onNext });`,
+      errors: [{ messageId: 'missingErrorHandler' }],
+    },
+    // A computed key holding a variable named error is not the error handler.
+    {
+      code: `obs.subscribe({ next: onNext, [error]: h });`,
       errors: [{ messageId: 'missingErrorHandler' }],
     },
     {
