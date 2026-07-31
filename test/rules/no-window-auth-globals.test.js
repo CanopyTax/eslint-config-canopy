@@ -37,6 +37,12 @@ ruleTester.run('no-window-auth-globals', rule, {
     // Unrelated window access
     { code: `const x = window.location.href;` },
     { code: `const x = window.innerWidth;` },
+    // Object.prototype members are not auth globals. Matching with `in` would walk
+    // the prototype chain and report these.
+    { code: `window.toString();` },
+    { code: `const c = window.constructor;` },
+    { code: `const h = window.hasOwnProperty;` },
+    { code: `const { valueOf } = window;` },
   ],
   invalid: [
     {
@@ -104,9 +110,42 @@ ruleTester.run('no-window-auth-globals', rule, {
         },
       ],
     },
-    // A compound assignment reads before it writes
+    // The right-hand side of a plain assignment is still a read
     {
       code: `window.tenant = window.tenant;`,
+      errors: [
+        {
+          messageId: 'windowAuthGlobal',
+          data: { global: 'tenant', replacement: USER_TENANT },
+        },
+      ],
+    },
+    // Compound and logical assignment read the current value before writing, so
+    // they are reads. `++` already behaved this way; these must agree with it.
+    {
+      code: `window.tenant += "x";`,
+      errors: [
+        {
+          messageId: 'windowAuthGlobal',
+          data: { global: 'tenant', replacement: USER_TENANT },
+        },
+      ],
+    },
+    {
+      code: `window.betas ||= {};`,
+      errors: [{ messageId: 'windowAuthGlobal', data: { global: 'betas', replacement: BETAS } }],
+    },
+    {
+      code: `window.tenant ??= {};`,
+      errors: [
+        {
+          messageId: 'windowAuthGlobal',
+          data: { global: 'tenant', replacement: USER_TENANT },
+        },
+      ],
+    },
+    {
+      code: `window.tenant++;`,
       errors: [
         {
           messageId: 'windowAuthGlobal',
