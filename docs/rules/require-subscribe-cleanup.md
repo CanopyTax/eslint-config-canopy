@@ -26,9 +26,10 @@ cleanup returned from the wrong function:
 // Reported, correctly: the return belongs to the subscribe callback, not the
 // effect, so nothing is ever cleaned up.
 useEffect(() => {
-  const obs = getStatuses().subscribe((statuses) => {
+  let sub;
+  sub = getStatuses().subscribe((statuses) => {
     setStatuses(statuses);
-    return () => obs.unsubscribe();
+    return () => sub.unsubscribe();
   });
 }, [deps]);
 ```

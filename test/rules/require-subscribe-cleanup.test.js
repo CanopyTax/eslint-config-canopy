@@ -58,7 +58,8 @@ ruleTester.run('require-subscribe-cleanup', rule, {
     // A subscribe inside a nested handler is not the effect's own subscription
     {
       code: `useEffect(() => {
-        el.addEventListener("click", () => obs.subscribe(onNext));
+        const handler = () => obs.subscribe(onNext);
+        el.addEventListener("click", handler);
         return () => el.removeEventListener("click", handler);
       }, []);`,
     },
