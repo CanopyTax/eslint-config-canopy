@@ -4,6 +4,7 @@ import noConditionalClass from './rules/no-conditional-class.js';
 import noWindowAuthGlobals from './rules/no-window-auth-globals.js';
 import noToLocaleStringForDates from './rules/no-tolocalestring-for-dates.js';
 import noHardcodedFontSize from './rules/no-hardcoded-font-size.js';
+import noLicenseCheckForFeatureGating from './rules/no-license-check-for-feature-gating.js';
 
 const plugin = {
   meta: {
@@ -16,6 +17,7 @@ const plugin = {
     'no-window-auth-globals': noWindowAuthGlobals,
     'no-tolocalestring-for-dates': noToLocaleStringForDates,
     'no-hardcoded-font-size': noHardcodedFontSize,
+    'no-license-check-for-feature-gating': noLicenseCheckForFeatureGating,
   },
 };
 
