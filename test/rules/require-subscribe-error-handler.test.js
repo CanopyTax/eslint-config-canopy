@@ -35,12 +35,16 @@ ruleTester.run('require-subscribe-error-handler', rule, {
     // `pusher.subscribe("channel")` shape.
     { code: `pusher.subscribe("presence-tenant-1");` },
     { code: `pusher.subscribe(\`client-\${id}\`);` },
+    // Real Pusher code passes the channel name as a variable, so an argument that
+    // is merely a reference cannot be assumed to be a handler.
+    { code: `pusher.subscribe(channelName);` },
+    { code: `pusher.subscribe(channel.name);` },
+    { code: `pusher.subscribe(this.props.channelId);` },
+    // An observer passed by reference is indistinguishable from the above.
+    { code: `obs.subscribe(observer);` },
+    { code: `obs.subscribe(this.observer);` },
   ],
   invalid: [
-    {
-      code: `obs.subscribe(onNext);`,
-      errors: [{ messageId: 'missingErrorHandler' }],
-    },
     {
       code: `obs.subscribe((x) => setState(x));`,
       errors: [{ messageId: 'missingErrorHandler' }],

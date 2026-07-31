@@ -1,9 +1,9 @@
-const FUNCTION_ARG_TYPES = new Set([
-  'ArrowFunctionExpression',
-  'FunctionExpression',
-  'Identifier',
-  'MemberExpression',
-]);
+// Only an *inline* function is unambiguously a value handler. A bare reference is
+// not: real Pusher code passes the channel name as a variable
+// (`pusher.subscribe(channelName)`, `pusher.subscribe(this.props.channelId)`), and
+// an observer passed by reference looks identical. Since neither can be told apart
+// from a callback without type information, references are left alone.
+const INLINE_HANDLER_TYPES = new Set(['ArrowFunctionExpression', 'FunctionExpression']);
 
 function isObserverWithErrorKey(node) {
   if (node.type !== 'ObjectExpression') return false;
@@ -63,9 +63,7 @@ export default {
         // A second positional argument is the error handler.
         if (args.length >= 2) return;
 
-        // Only a lone *callback* is the anti-pattern. `.subscribe(topicName)` on a
-        // non-RxJS emitter takes a value, not a handler, and must not be reported.
-        if (!FUNCTION_ARG_TYPES.has(args[0].type)) return;
+        if (!INLINE_HANDLER_TYPES.has(args[0].type)) return;
 
         context.report({ node, messageId: 'missingErrorHandler' });
       },
