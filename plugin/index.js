@@ -8,6 +8,7 @@ import noLicenseCheckForFeatureGating from './rules/no-license-check-for-feature
 import requireStaleTimeInUseQuery from './rules/require-staletime-in-usequery.js';
 import requireSubscribeCleanup from './rules/require-subscribe-cleanup.js';
 import requireSubscribeErrorHandler from './rules/require-subscribe-error-handler.js';
+import noRawFetch from './rules/no-raw-fetch.js';
 
 const plugin = {
   meta: {
@@ -24,6 +25,7 @@ const plugin = {
     'require-staletime-in-usequery': requireStaleTimeInUseQuery,
     'require-subscribe-cleanup': requireSubscribeCleanup,
     'require-subscribe-error-handler': requireSubscribeErrorHandler,
+    'no-raw-fetch': noRawFetch,
   },
 };
 

@@ -108,6 +108,7 @@ export default [
       'canopy/require-staletime-in-usequery': 'warn',
       'canopy/require-subscribe-cleanup': 'warn',
       'canopy/require-subscribe-error-handler': 'warn',
+      'canopy/no-raw-fetch': 'warn',
 
       // TypeScript
       '@typescript-eslint/no-unused-vars': 'warn',
