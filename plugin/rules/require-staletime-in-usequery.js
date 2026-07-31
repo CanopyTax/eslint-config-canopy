@@ -12,7 +12,9 @@ function calleeName(callee) {
 function hasStaleTime(objectExpression) {
   return objectExpression.properties.some((prop) => {
     if (prop.type !== 'Property') return false;
-    if (prop.key.type === 'Identifier') return prop.key.name === 'staleTime';
+    // `{ [staleTime]: x }` reads a variable that happens to be named staleTime; the
+    // option itself is absent, so a computed identifier must not satisfy the check.
+    if (prop.key.type === 'Identifier') return !prop.computed && prop.key.name === 'staleTime';
     if (prop.key.type === 'Literal') return prop.key.value === 'staleTime';
     return false;
   });
@@ -35,7 +37,7 @@ export default {
     schema: [],
     messages: {
       missingStaleTime:
-        '`{{hook}}` has no `staleTime`, so it refetches on every mount — in the single-spa shell that means every navigation. Set `staleTime` explicitly.',
+        '`{{hook}}` has no `staleTime`, so it refetches on every mount — in the single-spa shell that means every navigation. Add one, e.g. `staleTime: 5 * 60 * 1000`, or `staleTime: 0` to say the refetch is intended.',
     },
   },
 

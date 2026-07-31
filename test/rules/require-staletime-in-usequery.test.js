@@ -70,5 +70,10 @@ ruleTester.run('require-staletime-in-usequery', rule, {
       code: `reactQuery.useQuery({ queryKey, queryFn });`,
       errors: [{ messageId: 'missingStaleTime', data: { hook: 'useQuery' } }],
     },
+    // A computed key holding a variable named staleTime is not the staleTime option.
+    {
+      code: `useQuery({ queryKey, queryFn, [staleTime]: x });`,
+      errors: [{ messageId: 'missingStaleTime', data: { hook: 'useQuery' } }],
+    },
   ],
 });
