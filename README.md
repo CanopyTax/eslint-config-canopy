@@ -53,6 +53,21 @@ export default [
 ];
 ```
 
+### Network access
+
+The shared config also restricts raw network access, using ESLint's built-in rules
+rather than a Canopy one:
+
+| Restriction | Rule |
+| --- | --- |
+| The `fetch` global | `no-restricted-globals` — use `fetcher!sofe`, which adds auth headers, the CSRF token, tenant context, error routing and Sentry breadcrumbs |
+| `axios` imports | `no-restricted-imports` — same reason |
+
+`no-restricted-globals` resolves through scope, so a locally declared or imported
+`fetch` (a `node-fetch` shim, a polyfill, a parameter) is **not** reported — only the
+ambient browser global. Server-side packages where `fetch()` is correct can turn this
+off with `'no-restricted-globals': 'off'`.
+
 ### Available rules
 
 | Rule | Description |
@@ -67,4 +82,3 @@ export default [
 | [`canopy/require-staletime-in-usequery`](docs/rules/require-staletime-in-usequery.md) | Requires an explicit `staleTime` when `useQuery` / `useInfiniteQuery` options are an object literal. Without it a query refetches on every mount, which in the single-spa shell means every navigation. Query-factory calls, spreads, and the legacy positional signature are not reported. |
 | [`canopy/require-subscribe-cleanup`](docs/rules/require-subscribe-cleanup.md) | Requires an effect that calls `.subscribe()` in its own scope to return a cleanup function, so the subscription does not outlive the component. Any returned value satisfies the rule; nested functions are not searched, which also catches a cleanup returned from the wrong function. |
 | [`canopy/require-subscribe-error-handler`](docs/rules/require-subscribe-error-handler.md) | Requires an error handler on `.subscribe()` when the value handler is an **inline** function — a second positional argument, an `error` key, or a spread observer satisfies it. Without one, stream errors are swallowed and never reach Sentry. Handlers passed by reference are not reported, since they are indistinguishable from a Pusher channel name; exactly one non-RxJS receiver (a Zustand store) is reported ecosystem-wide. |
-| [`canopy/no-raw-fetch`](docs/rules/no-raw-fetch.md) | Disallows the ambient `fetch()` global and `axios` imports in favour of `fetcher!sofe`, which supplies auth headers, CSRF, error routing and Sentry breadcrumbs. A locally defined or imported `fetch` is not reported, nor is a type-only axios import. **Off by default** — the only rule in the plugin the shared config does not enable, because two thirds of its findings come from Node packages where `fetch()` is correct. Browser microfrontends opt in explicitly. |
