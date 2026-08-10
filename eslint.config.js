@@ -102,6 +102,7 @@ export default [
       'canopy/no-class-ternary': 'warn',
       'canopy/no-conditional-class': 'warn',
       'canopy/no-window-auth-globals': 'warn',
+      'canopy/no-tolocalestring-for-dates': 'warn',
 
       // TypeScript
       '@typescript-eslint/no-unused-vars': 'warn',
