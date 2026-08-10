@@ -27,9 +27,16 @@ export default [
 ];
 ```
 
-## Plugin rules (opt-in)
+## Plugin rules
 
-This package also ships a `canopy` ESLint plugin via the `eslint-config-canopy/plugin` sub-export. It is not enabled by default — register it and pick the rules you want:
+This package ships a `canopy` ESLint plugin with Canopy-specific rules. Most of them
+are **already enabled at `warn`** by the shared config exported from this package, so
+extending `eslint-config-canopy` turns them on. See the table below for what each one
+reports, and `docs/rules/` for the details.
+
+The plugin is also exposed on its own via the `eslint-config-canopy/plugin` sub-export,
+so you can register it directly to change a severity, disable a rule, or opt into one
+that ships off by default:
 
 ```javascript
 import canopyConfig from "eslint-config-canopy";
@@ -53,3 +60,4 @@ export default [
 | [`canopy/no-cp-class-in-tw`](docs/rules/no-cp-class-in-tw.md) | Disallows Canopy `cp-*` class tokens inside `tw(...)` calls. Tailwind's `tw()` helper applies a per-app prefix to every token, so `tw("cp-body")` produces a broken class like `fo-cp-body`. Use `always("cp-body", tw(...))` or place the `cp-*` class outside `tw()`. Offers a suggestion fix for flat string-literal calls. |
 | [`canopy/no-class-ternary`](docs/rules/no-class-ternary.md) | Disallows a class-selecting ternary (both branches non-empty) in a JSX `className` attribute or a `tw(...)` / `always(...)` call. Use `toggle(cond, whenTrue, whenFalse)` instead. Auto-fixable. |
 | [`canopy/no-conditional-class`](docs/rules/no-conditional-class.md) | Disallows an empty-branch ternary (`cond ? "x" : ""`) or a `cond && "x"` short-circuit in a JSX `className` attribute or a `tw(...)` / `always(...)` call. Use `maybe(cond, "x")` instead. Auto-fixable. |
+| [`canopy/no-window-auth-globals`](docs/rules/no-window-auth-globals.md) | Disallows *reading* `window.loggedInUser`, `window.tenant`, or `window.betas`. These are snapshots that never update and are undefined before auth resolves. Use `useWithUserAndTenant()` / `UserTenantProps` / `useBetas()` from `cp-client-auth!sofe`. Writes are allowed, so bootstraps and test mocks are unaffected. |
