@@ -7,6 +7,7 @@ import noHardcodedFontSize from './rules/no-hardcoded-font-size.js';
 import noLicenseCheckForFeatureGating from './rules/no-license-check-for-feature-gating.js';
 import requireStaleTimeInUseQuery from './rules/require-staletime-in-usequery.js';
 import requireSubscribeCleanup from './rules/require-subscribe-cleanup.js';
+import requireSubscribeErrorHandler from './rules/require-subscribe-error-handler.js';
 
 const plugin = {
   meta: {
@@ -22,6 +23,7 @@ const plugin = {
     'no-license-check-for-feature-gating': noLicenseCheckForFeatureGating,
     'require-staletime-in-usequery': requireStaleTimeInUseQuery,
     'require-subscribe-cleanup': requireSubscribeCleanup,
+    'require-subscribe-error-handler': requireSubscribeErrorHandler,
   },
 };
 
