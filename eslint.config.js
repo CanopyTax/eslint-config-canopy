@@ -104,6 +104,7 @@ export default [
       'canopy/no-window-auth-globals': 'warn',
       'canopy/no-tolocalestring-for-dates': 'warn',
       'canopy/no-hardcoded-font-size': 'warn',
+      'canopy/no-license-check-for-feature-gating': 'warn',
 
       // TypeScript
       '@typescript-eslint/no-unused-vars': 'warn',
