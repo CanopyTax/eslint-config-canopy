@@ -1,0 +1,39 @@
+name: Publish
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # OIDC trusted publishing + provenance; no stored npm token
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    # Publishes only after a reviewer approves this environment's deployment.
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+      - run: corepack enable
+      - run: yarn install --immutable
+      - run: yarn test
+
+      - name: Verify tag matches package.json version
+        if: github.event_name == 'release'
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          PKG=$(node -p "require('./package.json').version")
+          [ "$TAG" = "$PKG" ] || { echo "Release tag $TAG does not match package.json $PKG"; exit 1; }
+
+      # npm, not yarn, performs the OIDC token exchange for trusted publishing.
+      - run: npm publish --provenance --access public
