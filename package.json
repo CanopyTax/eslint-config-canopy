@@ -17,7 +17,10 @@
     "lint": "eslint .",
     "test": "node --test"
   },
-  "repository": "git@canopy.githost.io:front-end/canopy-eslint.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CanopyTax/eslint-config-canopy.git"
+  },
   "license": "Apache-2.0",
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^8.27.0",
