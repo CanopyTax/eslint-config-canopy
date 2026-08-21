@@ -53,6 +53,21 @@ export default [
 ];
 ```
 
+### Network access
+
+The shared config also restricts raw network access, using ESLint's built-in rules
+rather than a Canopy one:
+
+| Restriction | Rule |
+| --- | --- |
+| The `fetch` global | `no-restricted-globals` — use `fetcher!sofe`, which adds auth headers, the CSRF token, tenant context, error routing and Sentry breadcrumbs |
+| `axios` imports | `no-restricted-imports` — same reason |
+
+`no-restricted-globals` resolves through scope, so a locally declared or imported
+`fetch` (a `node-fetch` shim, a polyfill, a parameter) is **not** reported — only the
+ambient browser global. Server-side packages where `fetch()` is correct can turn this
+off with `'no-restricted-globals': 'off'`.
+
 ### Available rules
 
 | Rule | Description |

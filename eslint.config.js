@@ -109,6 +109,19 @@ export default [
       'canopy/require-subscribe-cleanup': 'warn',
       'canopy/require-subscribe-error-handler': 'warn',
 
+      // fetcher!sofe adds auth headers, the CSRF token, tenant context, error routing
+      // and Sentry breadcrumbs. Raw fetch and axios get none of that. These are the
+      // built-in rules rather than a custom one because `no-restricted-globals` already
+      // does the scope analysis that matters — a local or imported `fetch` is left alone.
+      'no-restricted-globals': [
+        'warn',
+        { name: 'fetch', message: 'Use fetcher!sofe instead of raw fetch().' },
+      ],
+      'no-restricted-imports': [
+        'warn',
+        { paths: [{ name: 'axios', message: 'Use fetcher!sofe instead of axios.' }] },
+      ],
+
       // TypeScript
       '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/no-explicit-any': 'off',
