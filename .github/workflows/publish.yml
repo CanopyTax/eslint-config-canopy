@@ -28,12 +28,14 @@ jobs:
       - run: yarn install --immutable
       - run: yarn test
 
-      - name: Verify tag matches package.json version
-        if: github.event_name == 'release'
+      # Runs on every trigger: a workflow_dispatch only publishes when run from a
+      # tag whose name matches package.json, so manual runs can't publish an
+      # arbitrary branch's version outside a release.
+      - name: Verify ref matches package.json version
         run: |
-          TAG="${GITHUB_REF_NAME#v}"
+          REF="${GITHUB_REF_NAME#v}"
           PKG=$(node -p "require('./package.json').version")
-          [ "$TAG" = "$PKG" ] || { echo "Release tag $TAG does not match package.json $PKG"; exit 1; }
+          [ "$REF" = "$PKG" ] || { echo "Ref $REF does not match package.json $PKG; run from tag v$PKG"; exit 1; }
 
       # npm, not yarn, performs the OIDC token exchange for trusted publishing.
       - run: npm publish --provenance --access public
