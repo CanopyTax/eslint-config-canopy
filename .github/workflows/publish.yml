@@ -1,0 +1,41 @@
+name: Publish
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # OIDC trusted publishing; no stored npm token
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+      - run: corepack enable
+      - run: yarn install --immutable
+      - run: yarn test
+
+      # Publish only when package.json carries a version not yet on npm, so a
+      # merge to master ships exactly when it includes a version bump and is a
+      # no-op otherwise. Stands in for yarn's --tolerate-republish, which the
+      # npm CLI (required for OIDC publishing) does not have.
+      - name: Publish if the version is new
+        run: |
+          PKG=$(node -p "require('./package.json').version")
+          PUBLISHED=$(npm view "eslint-config-canopy@$PKG" version 2>/dev/null || true)
+          if [ -n "$PUBLISHED" ]; then
+            echo "eslint-config-canopy@$PKG already published; skipping."
+          else
+            npm publish --access public
+          fi
