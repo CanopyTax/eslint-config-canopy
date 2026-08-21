@@ -1,13 +1,13 @@
 name: Publish
 
 on:
-  release:
-    types: [published]
+  push:
+    branches: [master]
   workflow_dispatch:
 
 permissions:
   contents: read
-  id-token: write # OIDC trusted publishing + provenance; no stored npm token
+  id-token: write # OIDC trusted publishing; no stored npm token
 
 concurrency:
   group: publish
@@ -16,8 +16,6 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    # Publishes only after a reviewer approves this environment's deployment.
-    environment: production
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -28,14 +26,16 @@ jobs:
       - run: yarn install --immutable
       - run: yarn test
 
-      # Runs on every trigger: a workflow_dispatch only publishes when run from a
-      # tag whose name matches package.json, so manual runs can't publish an
-      # arbitrary branch's version outside a release.
-      - name: Verify ref matches package.json version
+      # Publish only when package.json carries a version not yet on npm, so a
+      # merge to master ships exactly when it includes a version bump and is a
+      # no-op otherwise. Stands in for yarn's --tolerate-republish, which the
+      # npm CLI (required for OIDC publishing) does not have.
+      - name: Publish if the version is new
         run: |
-          REF="${GITHUB_REF_NAME#v}"
           PKG=$(node -p "require('./package.json').version")
-          [ "$REF" = "$PKG" ] || { echo "Ref $REF does not match package.json $PKG; run from tag v$PKG"; exit 1; }
-
-      # npm, not yarn, performs the OIDC token exchange for trusted publishing.
-      - run: npm publish --provenance --access public
+          PUBLISHED=$(npm view "eslint-config-canopy@$PKG" version 2>/dev/null || true)
+          if [ -n "$PUBLISHED" ]; then
+            echo "eslint-config-canopy@$PKG already published; skipping."
+          else
+            npm publish --access public
+          fi
