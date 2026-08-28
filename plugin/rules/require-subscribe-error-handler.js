@@ -1,8 +1,6 @@
-// Only an *inline* function is unambiguously a value handler. A bare reference is
-// not: real Pusher code passes the channel name as a variable
-// (`pusher.subscribe(channelName)`, `pusher.subscribe(this.props.channelId)`), and
-// an observer passed by reference looks identical. Since neither can be told apart
-// from a callback without type information, references are left alone.
+// Only an *inline* function is clearly a value handler; a bare reference is not:
+// Pusher passes the channel name as a variable (`pusher.subscribe(channelName)`), and
+// a by-reference observer looks identical, so references are left alone.
 const INLINE_HANDLER_TYPES = new Set(['ArrowFunctionExpression', 'FunctionExpression']);
 
 function isObserverWithErrorKey(node) {

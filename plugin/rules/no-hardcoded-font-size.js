@@ -1,9 +1,8 @@
 import { isClassnameContainerCall, isClassNameAttribute } from '../utils/classname-evaluation.js';
 
-// The named Tailwind scale (`text-sm`, `text-lg`, …) is deliberately NOT reported.
-// Those tokens resolve through the Tailwind theme, so the Canopy theme can map them
-// onto the correct type scale. An arbitrary value cannot: `text-[13px]` pins a
-// literal length that no theme can reach.
+// The named Tailwind scale (`text-sm`, `text-lg`, …) is deliberately NOT reported:
+// those tokens resolve through the theme, so Canopy maps them to the right scale.
+// An arbitrary value cannot — `text-[13px]` pins a length no theme can reach.
 const ARBITRARY_TEXT_RE = /^text-\[(.+)\]$/;
 const CSS_LENGTH_RE = /^-?(?:\d*\.)?\d+(?:px|rem|em|pt|pc|in|cm|mm|ex|ch|vh|vw|vmin|vmax|%)$/;
 
@@ -35,11 +34,9 @@ function fontSizeToken(rawToken) {
   const arbitrary = ARBITRARY_TEXT_RE.exec(token);
   if (!arbitrary) return undefined;
 
-  // Tailwind allows an explicit `length:` type hint, so `text-[length:13px]` pins a
-  // literal size just as `text-[13px]` does. Strip the hint before testing.
-  // Everything else stays out: `text-[var(--cp-color-*)]`, `text-[#fff]` and
-  // `text-[color:red]` are colours, and `text-[length:var(--x)]` still defers to a
-  // custom property because what follows the hint is not a bare length.
+  // Tailwind's `length:` hint still pins a size (`text-[length:13px]`), so strip it
+  // before testing. Everything else stays out: colours like `text-[#fff]` /
+  // `text-[color:red]`, and `text-[length:var(--x)]`, which defers to a variable.
   const value = arbitrary[1].replace(/^length:/, '');
 
   return CSS_LENGTH_RE.test(value) ? token : undefined;

@@ -22,13 +22,9 @@ function patternKeyName(prop) {
   return undefined;
 }
 
-// Writes are how cp-client-auth, app bootstraps and test mocks populate these
-// globals in the first place, so only reads are violations. `delete` counts as a
-// write: bootstrap and test teardown use it to unset them.
-//
-// Only plain `=` is a pure write. Compound and logical assignment (`+=`, `||=`,
-// `??=`) read the current value before storing, which is exactly the stale-snapshot
-// problem this rule exists to catch.
+// Only reads are violations: writes are how cp-client-auth, bootstraps and test
+// mocks populate these globals, and `delete` (teardown) counts as a write too.
+// Only plain `=` is pure — `+=`/`||=`/`??=` read first, the stale-snapshot bug.
 function isWrite(node) {
   const { parent } = node;
   if (parent?.type === 'AssignmentExpression' && parent.left === node) {

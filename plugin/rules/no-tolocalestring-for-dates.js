@@ -1,10 +1,6 @@
-// Only the `Date`-exclusive methods are listed. `toLocaleString` is deliberately
-// absent: Luxon's DateTime exposes a method of that exact name as the *correct*
-// Canopy call, and numbers use it for thousands separators, so flagging it would
-// be wrong far more often than right.
-//
-// Each method maps to the preset that replaces it — telling someone formatting a
-// time to use a date preset would make the message actively misleading.
+// `toLocaleString` is excluded on purpose: it is Luxon DateTime's correct API
+// and how numbers get thousands separators; flagging it is wrong more than right.
+// Each Date-only method maps to the preset that replaces it, so the fix message fits.
 const DATE_ONLY_METHODS = new Map([
   ['toLocaleDateString', 'DateTime.DATE_SHORT'],
   ['toLocaleTimeString', 'DateTime.TIME_SIMPLE'],
