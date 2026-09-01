@@ -12,7 +12,7 @@ const ruleTester = new RuleTester({
 });
 
 const USER_TENANT =
-  'useWithUserAndTenant() (the UserTenantProps decorator in class components; outside React, the NAMED exports getLoggedInUser()/getTenant() — they are not on the default auth export)';
+  'useWithUserAndTenant() (the UserTenantProps decorator in class components, or the named export getLoggedInUser() outside React)';
 const BETAS = 'useBetas()';
 
 ruleTester.run('no-window-auth-globals', rule, {
