@@ -53,7 +53,7 @@ Examples of **correct** code for this rule:
 
 import { useWithUserAndTenant, useBetas } from "cp-client-auth!sofe";
 
-const { user, tenant } = useWithUserAndTenant();
+const [user, tenant] = useWithUserAndTenant();
 const betas = useBetas();
 
 // Writes are fine — this is how the globals get set.
@@ -64,6 +64,24 @@ window.tenant = tenant;
 For class components, use the `UserTenantProps` decorator instead of
 `useWithUserAndTenant()`.
 
+Outside React — bootstrap code, root-config activity functions, plain
+utilities — use the **named** exports `getLoggedInUser()` and `getTenant()`,
+and call them at the point of use rather than caching the result:
+
+```js
+import { getLoggedInUser } from "cp-client-auth!sofe";
+
+if (getLoggedInUser()?.role === "Client") {
+  /* ... */
+}
+```
+
+These are named exports only. The default export is the token/session `auth`
+object, which carries `getLoggedInUserAsObservable()` but **not**
+`getLoggedInUser()` — so `Auth.getLoggedInUser()` off a default import is
+`undefined` and throws at runtime. Jest mocks that stub the default export
+won't catch it, so it surfaces in production, not in tests.
+
 ## When Not To Use It
 
 Disable this rule in `cp-client-auth` itself, which necessarily reads these
@@ -72,6 +90,8 @@ globals to implement the hooks that replace them. A file-level
 there.
 
 Code running outside a React tree — bootstrap and root-config modules that have
-no component to hold a hook — may also need to read the globals directly. Prefer
-the RxJS observables from `cp-client-auth` where you can, and reach for a
-targeted `eslint-disable-next-line` where you cannot.
+no component to hold a hook — should use the named exports `getLoggedInUser()`
+and `getTenant()` for point-in-time reads, or the RxJS observables to react to
+changes. The remaining legitimate direct read is a bootstrap gate that checks
+whether the globals are populated yet; use a targeted
+`eslint-disable-next-line` there.
