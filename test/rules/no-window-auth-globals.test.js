@@ -11,7 +11,8 @@ const ruleTester = new RuleTester({
   },
 });
 
-const USER_TENANT = 'useWithUserAndTenant() (or the UserTenantProps decorator in class components)';
+const USER_TENANT =
+  'useWithUserAndTenant() (the UserTenantProps decorator in class components, or the named export getLoggedInUser() outside React)';
 const BETAS = 'useBetas()';
 
 ruleTester.run('no-window-auth-globals', rule, {
@@ -26,7 +27,8 @@ ruleTester.run('no-window-auth-globals', rule, {
     { code: `delete window.tenant;` },
     { code: `delete window.betas;` },
     // The sanctioned replacements
-    { code: `const { user, tenant } = useWithUserAndTenant();` },
+    { code: `const [user, tenant] = useWithUserAndTenant();` },
+    { code: `const user = getLoggedInUser();` },
     { code: `const betas = useBetas();` },
     // Bare identifiers are locals, not the global
     { code: `const x = loggedInUser;` },

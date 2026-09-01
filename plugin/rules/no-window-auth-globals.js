@@ -1,4 +1,5 @@
-const USER_TENANT = 'useWithUserAndTenant() (or the UserTenantProps decorator in class components)';
+const USER_TENANT =
+  'useWithUserAndTenant() (the UserTenantProps decorator in class components, or the named export getLoggedInUser() outside React)';
 
 const REPLACEMENTS = {
   loggedInUser: USER_TENANT,

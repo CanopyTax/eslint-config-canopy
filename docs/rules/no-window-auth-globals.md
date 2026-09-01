@@ -53,7 +53,7 @@ Examples of **correct** code for this rule:
 
 import { useWithUserAndTenant, useBetas } from "cp-client-auth!sofe";
 
-const { user, tenant } = useWithUserAndTenant();
+const [user, tenant] = useWithUserAndTenant();
 const betas = useBetas();
 
 // Writes are fine — this is how the globals get set.
@@ -64,6 +64,19 @@ window.tenant = tenant;
 For class components, use the `UserTenantProps` decorator instead of
 `useWithUserAndTenant()`.
 
+Outside React, use the named exports `getLoggedInUser()` and `getTenant()`,
+called at the point of use rather than cached:
+
+```js
+import { getLoggedInUser } from "cp-client-auth!sofe";
+
+if (getLoggedInUser()?.role === "Client") {
+  /* ... */
+}
+```
+
+Note these are named exports; they are not on the default `auth` export.
+
 ## When Not To Use It
 
 Disable this rule in `cp-client-auth` itself, which necessarily reads these
@@ -73,5 +86,5 @@ there.
 
 Code running outside a React tree — bootstrap and root-config modules that have
 no component to hold a hook — may also need to read the globals directly. Prefer
-the RxJS observables from `cp-client-auth` where you can, and reach for a
-targeted `eslint-disable-next-line` where you cannot.
+the named exports or the RxJS observables from `cp-client-auth` where you can,
+and reach for a targeted `eslint-disable-next-line` where you cannot.
