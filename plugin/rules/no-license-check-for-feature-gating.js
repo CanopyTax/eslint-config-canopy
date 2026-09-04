@@ -45,10 +45,9 @@ export default {
       'DoWhileStatement',
     ]);
 
-    // A call is a feature gate when its value is consumed as a condition rather
-    // than stored, returned or passed along. Being an operand of `&&` / `||`
-    // counts wherever that expression ends up, since `cond && <Feature />` gates
-    // rendering just as much as an `if` does.
+    // A call is a feature gate when its value is consumed as a condition rather than
+    // stored, returned or passed along. `&&` / `||` operands count wherever they end
+    // up, since `cond && <Feature />` gates rendering just as much as an `if` does.
     function isConditionalPosition(node) {
       let current = node;
       let { parent } = node;

@@ -108,11 +108,11 @@ export default [
       'canopy/require-staletime-in-usequery': 'warn',
       'canopy/require-subscribe-cleanup': 'warn',
       'canopy/require-subscribe-error-handler': 'warn',
+      'canopy/comment-length': 'error',
 
-      // fetcher!sofe adds auth headers, the CSRF token, tenant context, error routing
-      // and Sentry breadcrumbs. Raw fetch and axios get none of that. These are the
-      // built-in rules rather than a custom one because `no-restricted-globals` already
-      // does the scope analysis that matters — a local or imported `fetch` is left alone.
+      // fetcher!sofe adds auth headers, CSRF, tenant context, error routing and Sentry
+      // breadcrumbs; raw fetch and axios get none. Built-in rather than custom because
+      // `no-restricted-globals` already scopes correctly — a local `fetch` is left alone.
       'no-restricted-globals': [
         'warn',
         { name: 'fetch', message: 'Use fetcher!sofe instead of raw fetch().' },
