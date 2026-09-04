@@ -53,25 +53,45 @@ built-in carve-out.
 - `max` (integer, default `240`) — the maximum number of characters allowed in a
   comment's text.
 
+### Setting a different limit in a consuming repo
+
+A repo that wants a tighter (or looser) cap restates the rule after the shared
+config. Flat config replaces the whole entry rather than merging into it, so give
+both the severity and the options:
+
+```js
+// eslint.config.mjs
+import canopyConfig from "eslint-config-canopy";
+
+export default [
+  ...canopyConfig,
+  { rules: { "canopy/comment-length": ["error", { max: 120 }] } },
+];
+```
+
 Examples of **incorrect** code for this rule:
 
 ```js
 /*eslint canopy/comment-length: "error"*/
 
-// This comment keeps going and going, well past the point where it would fit in the two or three lines the limit is meant to allow, so it should be shortened or moved into linked documentation instead of living inline here.
+// This comment keeps going and going, well past the point where it would still fit in the two or three lines the limit is meant to allow, so it ought to be shortened, or moved into linked documentation, instead of sprawling inline here where it will quietly drift out of date.
 
-/* A block comment is measured the same way. A tagless doc-syntax block earns no
-   exemption either — if the prose is this long it belongs in a real doc, not a
-   comment that scrolls off the screen and drifts out of date. ... */
+/* A block comment is measured the same way, as one whole. A tagless doc-syntax
+   block earns no exemption either: if the prose really runs this long it belongs
+   in a real document, not in a comment that scrolls off the side of the screen
+   and drifts out of date the moment the code beneath it changes shape. */
 
 /**
- * A /** */ block with no JSDoc tag is just prose in doc syntax, so it is still
- * measured and this long paragraph trips the limit exactly as the plain block
- * above does. Adding a real @tag would exempt it — as genuine API docs. ...
+ * A doc-syntax block carrying no JSDoc tag is just prose, so it is measured
+ * like any other block and this overlong paragraph trips the limit exactly as
+ * the plain block above it does. A real param or returns tag would exempt the
+ * block instead, on the grounds that it is then genuine API documentation.
  */
 
-// The first half of a long explanation split across two lines to look shorter,
-// but the two lines are measured together so the total still trips the limit.
+// The first half of a long explanation, split across several separate lines so
+// that each one on its own looks reassuringly short — but the run of standalone
+// lines is measured together as a single paragraph, so the total still trips the
+// limit, and the whole run is reported once.
 ```
 
 Examples of **correct** code for this rule:

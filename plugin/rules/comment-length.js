@@ -4,10 +4,10 @@ const DEFAULT_MAX = 240;
 // — the same escape `max-len` makes with its `ignoreUrls` option.
 const URL_RE = /(?:https?|ftp):\/\/\S+/i;
 
-// A JSDoc tag (`@param`, `@returns`, …) marks a block as structured API
-// documentation, which legitimately runs long. A tagless `/** */` block is just
-// inline prose in doc syntax and stays subject to the limit.
-const JSDOC_TAG_RE = /(^|\s)@\w/;
+// A JSDoc tag (`@param`, …) marks a block as structured API documentation, which
+// legitimately runs long; a tagless doc block is prose in doc syntax and stays
+// subject to the limit. `*` before the `@` matches inline `/**@type {Foo}*/`.
+const JSDOC_TAG_RE = /(^|[\s*])@\w/;
 
 export default {
   meta: {

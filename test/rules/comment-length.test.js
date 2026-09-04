@@ -44,6 +44,14 @@ ruleTester.run('comment-length', rule, {
     {
       code: `/** @deprecated ${'a'.repeat(250)} */`,
     },
+    // An inline doc block puts the tag straight after `/**`, with no whitespace
+    // before the `@`. It is the same structured documentation and stays exempt.
+    {
+      code: `/**@deprecated ${'a'.repeat(250)}*/`,
+    },
+    {
+      code: `/**@type {string} ${'a'.repeat(250)}*/`,
+    },
   ],
   invalid: [
     // A single line comment one character over the limit.
@@ -83,6 +91,17 @@ ruleTester.run('comment-length', rule, {
     {
       code: `const x = 1; //${overLimit}`,
       errors: [{ messageId: 'tooLong', data: { length: 241, max: 240 } }],
+    },
+    // A tagless inline doc block is still prose, so allowing a tag to sit
+    // against `/**` must not exempt every `/**`-opened comment.
+    {
+      code: `/**${overLimit}*/`,
+      errors: [{ messageId: 'tooLong' }],
+    },
+    // An email-style `@` mid-word is not a tag and earns no exemption.
+    {
+      code: `/**\n * ${'a'.repeat(250)} ask someone@example.com\n */`,
+      errors: [{ messageId: 'tooLong' }],
     },
   ],
 });

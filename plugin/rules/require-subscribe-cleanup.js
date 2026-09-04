@@ -15,9 +15,9 @@ function calleeName(callee) {
   return undefined;
 }
 
-// React accepts only a function as cleanup, so a returned literal, object or array
-// cannot be one and hid leaks behind guards like `if (x) return null;`. A value that
-// might be a function still counts (`return cleanup`, `makeCleanup()`).
+// React accepts only a function (or undefined) as cleanup, so a returned literal,
+// object or array cannot be one, and treating it as cleanup hid real leaks behind
+// guards like `if (x) return null;`. Anything that may be a function still counts.
 const NON_CLEANUP_TYPES = new Set([
   'Literal',
   'ObjectExpression',
