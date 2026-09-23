@@ -45,3 +45,25 @@ test('phraseMatcher ignores a phrase inside a longer word', () => {
   assert.equal(find('should workers restart'), undefined);
   assert.equal(find('covers this bugfix path'), undefined);
 });
+
+test('phraseMatcher returns the phrase as given with mixed case', () => {
+  const find = phraseMatcher(['This PR', 'CRITICAL']);
+  assert.equal(find('the scenario This PR fixes'), 'This PR');
+  assert.equal(find('CRITICAL bug found'), 'CRITICAL');
+});
+
+test('a bare @ts-ignore contributes nothing', () => {
+  assert.equal(getContentText(group(line(' @ts-ignore'))), '');
+});
+
+test('a bare istanbul directive contributes nothing', () => {
+  assert.equal(getContentText(group(line(' istanbul ignore next'))), '');
+});
+
+test('a bare c8 directive contributes nothing', () => {
+  assert.equal(getContentText(group(line(' c8 ignore next'))), '');
+});
+
+test('a block exported directive contributes nothing', () => {
+  assert.equal(getContentText(group(block('exported Foo'))), '');
+});

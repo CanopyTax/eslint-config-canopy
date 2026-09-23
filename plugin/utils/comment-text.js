@@ -24,7 +24,7 @@ const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 export function phraseMatcher(phrases) {
   const patterns = phrases.map((phrase) => [
     phrase,
-    new RegExp(`(?<![a-z0-9])${escapeRegExp(phrase)}(?![a-z0-9])`),
+    new RegExp(`(?<![a-z0-9])${escapeRegExp(phrase.toLowerCase())}(?![a-z0-9])`),
   ]);
   return (text) => {
     const lower = text.toLowerCase();

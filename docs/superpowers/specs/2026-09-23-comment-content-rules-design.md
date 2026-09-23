@@ -62,7 +62,7 @@ docs and URLs cannot be shortened; they do not apply to content. `@see BLU-123`
 is a ticket reference.
 
 The rules skip a group whose entire text is a directive with no reason
-(`eslint-disable…`, `eslint-enable…`, `@ts-…`, `prettier-ignore`), so the
+(`eslint-disable…`, `eslint-enable…`, `@ts-…`, `prettier-ignore`, `istanbul …`, `c8 …`, and in block comments inline config `eslint …`, `global`/`globals`, `exported`), so the
 disables this rollout adds never trip a rule.
 
 ### `no-external-ref-in-comment` (error)
