@@ -30,7 +30,7 @@ export default {
     const sourceCode = context.sourceCode ?? context.getSourceCode();
     return {
       Program() {
-        for (const group of getCommentGroups(sourceCode)) {
+        for (const group of getCommentGroups(sourceCode, { separateNonProse: true })) {
           if (group.comments.some((comment) => BANNER_RE.test(decorationText(comment)))) {
             context.report({ loc: group.loc, messageId: 'banner' });
           }

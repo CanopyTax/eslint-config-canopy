@@ -34,7 +34,7 @@ export default {
     const sourceCode = context.sourceCode ?? context.getSourceCode();
     return {
       Program() {
-        for (const group of getCommentGroups(sourceCode)) {
+        for (const group of getCommentGroups(sourceCode, { separateNonProse: true })) {
           const match = findHistory(getContentText(group));
           if (match) context.report({ loc: group.loc, messageId: 'history', data: { match } });
         }

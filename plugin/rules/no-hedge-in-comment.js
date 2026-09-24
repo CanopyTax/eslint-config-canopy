@@ -28,7 +28,7 @@ export default {
     const sourceCode = context.sourceCode ?? context.getSourceCode();
     return {
       Program() {
-        for (const group of getCommentGroups(sourceCode)) {
+        for (const group of getCommentGroups(sourceCode, { separateNonProse: true })) {
           const match = findHedge(getContentText(group));
           if (match) context.report({ loc: group.loc, messageId: 'hedge', data: { match } });
         }

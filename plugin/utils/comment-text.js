@@ -5,14 +5,24 @@ const ANY_DIRECTIVE_RE = /^(?:eslint-disable(?:-next-line|-line)?|eslint-enable|
 const BLOCK_DIRECTIVE_RE = /^(?:eslint|globals?|exported)(?:\s|$)/;
 const TS_DIRECTIVE_RE = /^@ts-[\w-]+\s*/;
 
-function proseOf(comment) {
+// Returns the prose a directive carries (possibly ''), or undefined when the
+// comment is not a directive.
+function directiveProse(comment) {
   const text = comment.value.trim();
   if (TS_DIRECTIVE_RE.test(text)) return text.replace(TS_DIRECTIVE_RE, '');
   const isDirective =
     ANY_DIRECTIVE_RE.test(text) || (comment.type === 'Block' && BLOCK_DIRECTIVE_RE.test(text));
-  if (!isDirective) return text;
+  if (!isDirective) return undefined;
   const reasonAt = text.indexOf(' -- ');
   return reasonAt === -1 ? '' : text.slice(reasonAt + 4).trim();
+}
+
+export function isDirectiveWithoutProse(comment) {
+  return directiveProse(comment) === '';
+}
+
+function proseOf(comment) {
+  return directiveProse(comment) ?? comment.value.trim();
 }
 
 export function getContentText(group) {

@@ -86,7 +86,7 @@ export default {
     const sourceCode = context.sourceCode ?? context.getSourceCode();
     return {
       Program() {
-        for (const group of getCommentGroups(sourceCode)) {
+        for (const group of getCommentGroups(sourceCode, { separateNonProse: true })) {
           if (group.kind !== 'run' || group.comments.length !== 1) continue;
           const [comment] = group.comments;
           if (comment.type !== 'Line') continue;

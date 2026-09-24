@@ -103,3 +103,8 @@ comment:
 /* eslint-disable-next-line canopy/no-history-in-comment */
 // Before the fix, two fields on different pages could be treated as one row.
 ```
+
+Either directive form works for this rule: `// eslint-disable-next-line
+canopy/no-history-in-comment` on its own line suppresses it too. Use the block
+form when the same directive also covers `comment-length`, which joins a `//`
+directive into the comment below it.

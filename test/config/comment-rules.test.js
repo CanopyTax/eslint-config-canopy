@@ -22,11 +22,16 @@ test('a block-form disable above the comment suppresses the finding', () => {
   assert.deepEqual(canopyMessages(code), []);
 });
 
-test('a // disable directly above a // comment does not suppress it', () => {
+test('a // disable directly above a // comment suppresses it', () => {
   const code = `// eslint-disable-next-line canopy/no-hedge-in-comment\n// hopefully this holds\nexport const a = 1;\n`;
+  assert.deepEqual(canopyMessages(code), []);
+});
+
+test('a // disable of comment-length directly above a long // run does not suppress it', () => {
+  const long = 'x'.repeat(250);
+  const code = `// eslint-disable-next-line canopy/comment-length\n// ${long}\nexport const a = 1;\n`;
   const messages = canopyMessages(code);
-  assert.equal(messages.length, 1);
-  assert.equal(messages[0].ruleId, 'canopy/no-hedge-in-comment');
+  assert.deepEqual(messages.map((m) => m.ruleId), ['canopy/comment-length']);
   assert.equal(messages[0].line, 1);
 });
 

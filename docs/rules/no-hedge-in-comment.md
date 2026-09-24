@@ -86,3 +86,8 @@ If a specific comment genuinely needs to hedge, opt out at that comment:
 /* eslint-disable-next-line canopy/no-hedge-in-comment */
 // Not sure why, but the svg has a title of "filled circle" we can check
 ```
+
+Either directive form works for this rule: `// eslint-disable-next-line
+canopy/no-hedge-in-comment` on its own line suppresses it too. Use the block
+form when the same directive also covers `comment-length`, which joins a `//`
+directive into the comment below it.

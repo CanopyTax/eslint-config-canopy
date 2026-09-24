@@ -1,7 +1,13 @@
+import { isDirectiveWithoutProse } from './comment-text.js';
+
 // Splits a file's comments into the units a reader treats as one comment: each
 // /* */ block, each // comment that trails code, and each run of standalone //
 // lines on consecutive lines, which reads as one paragraph.
-export function getCommentGroups(sourceCode) {
+//
+// With `separateNonProse`, a shebang and a // directive with no prose are each
+// their own group, so a `// eslint-disable-next-line` line suppresses findings
+// on the comment below it instead of being reported as part of it.
+export function getCommentGroups(sourceCode, { separateNonProse = false } = {}) {
   const comments = sourceCode.getAllComments();
   const groups = [];
 
@@ -9,6 +15,9 @@ export function getCommentGroups(sourceCode) {
     const tokenBefore = sourceCode.getTokenBefore(comment, { includeComments: false });
     return Boolean(tokenBefore) && tokenBefore.loc.end.line === comment.loc.start.line;
   }
+
+  const standsAlone = (comment) =>
+    separateNonProse && (comment.type === 'Shebang' || isDirectiveWithoutProse(comment));
 
   for (let i = 0; i < comments.length; ) {
     const comment = comments[i];
@@ -26,11 +35,12 @@ export function getCommentGroups(sourceCode) {
 
     const run = [comment];
     let j = i + 1;
-    while (j < comments.length) {
+    while (j < comments.length && !standsAlone(comment)) {
       const next = comments[j];
       if (
         next.type === 'Line' &&
         !isTrailing(next) &&
+        !standsAlone(next) &&
         next.loc.start.line === run[run.length - 1].loc.end.line + 1
       ) {
         run.push(next);

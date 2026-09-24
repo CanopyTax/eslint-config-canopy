@@ -222,9 +222,10 @@ Resolution per finding follows the 5.4 provenance gate:
   otherwise a new directive is added. A comment hit by several rules that the
   gate says to disable gets one directive listing all of them.
 - Directives use the block form `/* eslint-disable-next-line … */`, as in
-  5.4. A `//` directive directly above a `//` comment joins that run, the run
-  is reported at the directive's own line, and `disable-next-line` does not
-  cover it.
+  5.4. The content rules treat a directive-only `//` line as its own comment,
+  so the `//` form works for them, but `comment-length` still joins it into
+  the run below, so any directive that covers `comment-length` must be the
+  block form. Using the block form everywhere keeps one convention.
 - `no-obvious-comment` findings (`warn`) are not part of the rollout.
 
 Estimated scale from local checkouts (stale; the plan re-measures on
