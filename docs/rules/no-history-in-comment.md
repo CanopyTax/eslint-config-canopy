@@ -1,10 +1,10 @@
 # Disallow history narration in comments (no-history-in-comment)
 
 A comment that describes how the code used to behave, or what a fix changed,
-stops being useful the moment the reader cannot see what came before. The
-narration also rots: the next change makes the "before" state wrong, and
-nothing forces the comment to keep up. Git already keeps the history; the
-comment should describe the code as it stands.
+is not useful to a reader who cannot see the earlier code. It also becomes
+wrong: the next change alters what "before" refers to, and nothing requires
+the comment to be updated. Git already keeps the history; the comment should
+describe the code as it is now.
 
 ## Rule Details
 
@@ -94,7 +94,7 @@ saying where the import used to live, it states where it lives now.
 
 If your team deliberately keeps a changelog-style comment at the top of a file
 to summarize recent fixes for readers who won't check git history, this rule
-will fight that convention.
+conflicts with that convention.
 
 If a specific comment genuinely needs to narrate history, opt out at that
 comment:

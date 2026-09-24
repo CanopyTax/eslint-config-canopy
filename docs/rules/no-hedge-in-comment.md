@@ -78,7 +78,7 @@ directly.
 
 If your team uses hedge phrases as an intentional marker for comments that
 still need follow-up investigation — a searchable convention rather than a
-mistake — this rule will fight that convention.
+mistake — this rule conflicts with that convention.
 
 If a specific comment genuinely needs to hedge, opt out at that comment:
 

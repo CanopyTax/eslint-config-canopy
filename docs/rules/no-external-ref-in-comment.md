@@ -1,7 +1,7 @@
 # Disallow external references in comments (no-external-ref-in-comment)
 
-A comment should stand on its own for a reader who has only the repo open. A
-ticket ID, a section of a planning document, or a PR number moves the real
+A comment should be understandable to a reader who has only the repo open. A
+ticket ID, a section of a planning document, or a PR number puts the actual
 explanation somewhere that reader cannot see — a Jira board, a doc that was
 never committed, a closed PR. This rule reports those references.
 
@@ -119,7 +119,7 @@ pointing at the ticket, it states what the code still needs to do.
 
 If your codebase requires ticket IDs in comments by policy — for example, a
 compliance rule that every workaround must cite its tracking ticket inline —
-this rule will fight that convention.
+this rule conflicts with that convention.
 
 If a specific comment genuinely needs to keep a reference, opt out at that
 comment:

@@ -1,10 +1,9 @@
 # Disallow decorative banner comments (no-banner-comment)
 
-A banner made of repeated characters — a divider line, a boxed title — adds
-visual weight without adding information. It also drifts: the line length
-stops matching the title the moment either one is edited. File structure,
-section naming, and `describe` blocks carry the same organizing intent without
-the upkeep.
+A banner made of repeated characters — a divider line, a boxed title — takes
+up lines without adding information. Its length also stops matching the title
+as soon as either one is edited. File structure, section naming, and
+`describe` blocks separate sections without that maintenance.
 
 ## Rule Details
 
@@ -86,8 +85,8 @@ five or more of the same character in a row.
 
 ### Rewriting a section divider
 
-A divider that separates unrelated content in one file is usually marking a
-seam that should be its own file or its own `describe` block instead:
+A divider that separates unrelated content in one file usually marks content
+that should be its own file or its own `describe` block instead:
 
 ```js
 // ─── Fixtures ─────────────────────────────
@@ -110,4 +109,4 @@ each test imports.
 ## When Not To Use It
 
 If a project deliberately formats source files with ASCII-art section
-dividers as a house style, this rule will fight that style on every file.
+dividers as a house style, this rule conflicts with that style on every file.
