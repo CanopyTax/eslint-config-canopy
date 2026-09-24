@@ -3,10 +3,9 @@ import { isDirectiveWithoutProse } from './comment-text.js';
 // Splits a file's comments into the units a reader treats as one comment: each
 // /* */ block, each // comment that trails code, and each run of standalone //
 // lines on consecutive lines, which reads as one paragraph.
-//
-// With `separateNonProse`, a shebang and a // directive with no prose are each
-// their own group, so a `// eslint-disable-next-line` line suppresses findings
-// on the comment below it instead of being reported as part of it.
+
+// `separateNonProse` makes a shebang or a prose-free // directive its own group,
+// so `// eslint-disable-next-line` covers the comment below instead of joining it.
 export function getCommentGroups(sourceCode, { separateNonProse = false } = {}) {
   const comments = sourceCode.getAllComments();
   const groups = [];

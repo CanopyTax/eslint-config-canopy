@@ -67,3 +67,8 @@ test('a bare c8 directive contributes nothing', () => {
 test('a block exported directive contributes nothing', () => {
   assert.equal(getContentText(group(block('exported Foo'))), '');
 });
+
+test('a block comment collapses line breaks and * decoration into single spaces', () => {
+  assert.equal(getContentText(group(block('*\n * not sure\n * why\n '))), '* not sure why');
+  assert.equal(getContentText(group(block(' first\n   second\r\n\tthird '))), 'first second third');
+});

@@ -4,7 +4,7 @@ const BANNER_RE = /([=*#~\-─━])\1{4,}/;
 // A run of `*` that opens a block and ends its line, or that sits alone on the
 // block's last line, is block syntax, not decoration.
 const OPENER_RE = /^\*+(?=[ \t]*\r?\n)/;
-const CLOSER_RE = /(?<=\n[ \t]*)\*+$/;
+const CLOSER_RE = /(?<=\n[ \t]*)\*+[ \t]*$/;
 const TABLE_SEPARATOR_RE = /\|(?:\s*:?-+:?\s*\|)+/g;
 
 function decorationText(comment) {

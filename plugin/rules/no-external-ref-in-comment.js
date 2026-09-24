@@ -8,7 +8,11 @@ const TICKET_RE = /\b([A-Z][A-Z0-9]{1,9})-\d+\b/g;
 // Committed docs a reader can open from the repo. Any other .md file is assumed
 // to be a planning document that does not ship with the code.
 const OPENABLE_DOCS = new Set(['readme.md', 'changelog.md', 'contributing.md']);
-const MD_FILE_RE = /[\w./-]+\.md\b/gi;
+// The lookbehind makes each match start at the beginning of a path token, so a
+// long token without `.md` is scanned once instead of once per character.
+const MD_FILE_RE = /(?<![\w./-])[\w./-]+\.md\b/gi;
+// A .md file inside a URL is a link the reader can follow.
+const URL_RE = /(?:https?|ftp):\/\/\S+/gi;
 const POINTER_RES = [/§/, /\bPR ?#?\d+\b/, /\bPhase \d+\b/, /\b[\w-]+\.(?:tsx?|jsx?|mjs|cjs):\d+/];
 
 function findTicket(text) {
@@ -19,7 +23,7 @@ function findTicket(text) {
 }
 
 function findDocPointer(text) {
-  for (const match of text.matchAll(MD_FILE_RE)) {
+  for (const match of text.replace(URL_RE, ' ').matchAll(MD_FILE_RE)) {
     const name = match[0].split('/').pop().toLowerCase();
     if (!OPENABLE_DOCS.has(name)) return match[0];
   }

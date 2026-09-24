@@ -25,8 +25,17 @@ ruleTester.run('no-external-ref-in-comment', rule, {
     { code: `// @ts-ignore\nconst a = 1;` },
     { code: `//` },
     { code: `/**/` },
+    // A .md path inside a URL is a link the reader can follow.
+    { code: `// https://github.com/org/repo/blob/main/docs/setup.md` },
+    { code: `// see ftp://example.com/pub/notes.md` },
+    // A long path-like token with no .md must not backtrack quadratically.
+    { code: `// ${'a/'.repeat(50000)}` },
   ],
   invalid: [
+    {
+      code: `// see docs/setup.md`,
+      errors: [{ messageId: 'docPointer', data: { match: 'docs/setup.md' } }],
+    },
     {
       code: `// TODO(BLU-697): handle archived rows`,
       errors: [{ messageId: 'ticket', data: { match: 'BLU-697' } }],

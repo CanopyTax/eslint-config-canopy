@@ -11,8 +11,8 @@ between the comment and the identifiers in the code it documents, and it can
 both miss real restatements and flag a comment that happens to share words
 with the code for another reason. Because of that, the rule ships at **warn**
 rather than **error**, and its findings are advisory — they are not part of
-the fleet-wide rollout enforced by the other content rules (`comment-length`,
-`no-external-ref-in-comment`, `no-history-in-comment`, `no-hedge-in-comment`,
+the fleet-wide rollout enforced by the other content rules
+(`no-external-ref-in-comment`, `no-history-in-comment`, `no-hedge-in-comment`,
 `no-banner-comment`), and are not something CI blocks on.
 
 ## Rule Details

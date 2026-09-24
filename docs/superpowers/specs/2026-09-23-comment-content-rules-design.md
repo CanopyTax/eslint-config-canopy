@@ -1,6 +1,6 @@
 # Comment content rules — design
 
-Status: approved in conversation 2026-09-23, awaiting written-spec review.
+Status: approved 2026-09-23; implemented on branch feat/comment-content-rules.
 
 ## Context
 

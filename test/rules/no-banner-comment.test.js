@@ -16,6 +16,8 @@ ruleTester.run('no-banner-comment', rule, {
     { code: `//` },
     { code: `/**/` },
     { code: `#!/usr/bin/env node\nconst a = 1;` },
+    // Trailing spaces after the closing star run are still block syntax.
+    { code: `/**\n * Title\n *****   */` },
   ],
   invalid: [
     { code: `// ─── Fixtures ─────────────────────────────`, errors: [{ messageId: 'banner' }] },

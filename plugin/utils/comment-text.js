@@ -5,10 +5,18 @@ const ANY_DIRECTIVE_RE = /^(?:eslint-disable(?:-next-line|-line)?|eslint-enable|
 const BLOCK_DIRECTIVE_RE = /^(?:eslint|globals?|exported)(?:\s|$)/;
 const TS_DIRECTIVE_RE = /^@ts-[\w-]+\s*/;
 
+// A block comment's line break, plus the next line's indent and `*`, reads as a
+// space, so a phrase split across lines still matches. The lookbehind keeps a
+// long run of spaces from being rescanned at every position.
+const BLOCK_LINE_BREAK_RE = /(?<![ \t])[ \t]*\r?\n[ \t]*(?:\*[ \t]*)?/g;
+
+const textOf = (comment) =>
+  (comment.type === 'Block' ? comment.value.replace(BLOCK_LINE_BREAK_RE, ' ') : comment.value).trim();
+
 // Returns the prose a directive carries (possibly ''), or undefined when the
 // comment is not a directive.
 function directiveProse(comment) {
-  const text = comment.value.trim();
+  const text = textOf(comment);
   if (TS_DIRECTIVE_RE.test(text)) return text.replace(TS_DIRECTIVE_RE, '');
   const isDirective =
     ANY_DIRECTIVE_RE.test(text) || (comment.type === 'Block' && BLOCK_DIRECTIVE_RE.test(text));
@@ -22,7 +30,7 @@ export function isDirectiveWithoutProse(comment) {
 }
 
 function proseOf(comment) {
-  return directiveProse(comment) ?? comment.value.trim();
+  return directiveProse(comment) ?? textOf(comment);
 }
 
 export function getContentText(group) {

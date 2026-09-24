@@ -10,6 +10,11 @@ ruleTester.run('no-hedge-in-comment', rule, {
     { code: `// The retry must work offline; the cache is read first` },
   ],
   invalid: [
+    // A phrase split across lines of a doc block still matches.
+    {
+      code: `/**\n * Renders the label. Not sure\n * why the svg needs a title.\n */`,
+      errors: [{ messageId: 'hedge', data: { match: 'not sure why' } }],
+    },
     {
       code: `// Not sure why, but the svg has a title of "filled circle" we can check`,
       errors: [{ messageId: 'hedge', data: { match: 'not sure why' } }],
