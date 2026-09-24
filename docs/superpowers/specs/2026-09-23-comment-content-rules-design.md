@@ -295,3 +295,19 @@ were explanations of short, non-obvious statements (`break;`, `return;`,
 `delete x.archived_at`, `invalidate()`). Without the ratio, raising the
 `comment-length` cap would only let more model-drafted text through, so the
 cap stays at 240.
+
+## Validation results
+
+Run on 2026-09-24 over 66 local checkouts (stale; rollout re-measures on master).
+
+| Rule | Findings | Repos | Sample precision |
+|---|---|---|---|
+| no-external-ref-in-comment | 187 | 15 | 10/10 |
+| no-history-in-comment | 18 | 8 | 8/10 |
+| no-hedge-in-comment | 35 | 17 | 8/10 |
+| no-banner-comment | 305 | 15 | 10/10 |
+| no-obvious-comment | 56 | 17 | 27/30 obvious — kept |
+
+No count differs from its estimate by more than 2×.
+
+The first run (2026-09-23) failed two rules: external-ref at 6/10, because `GMT-0700` timestamps matched the ticket pattern (47 findings), and history at 7/10, because of runtime-state phrases. Commit 309ac0f added `GMT` to the ticket-prefix exclusions and removed `used to be`, `previously was`, and `was broken`. The external-ref and history rows above are from a second run with a new sample (seed 20260924). The hedge, banner, and no-obvious precision figures come from run 1 (seed 20260923), since those rules did not change. All counts are from run 2.
