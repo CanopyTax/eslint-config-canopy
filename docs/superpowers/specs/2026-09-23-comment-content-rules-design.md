@@ -70,7 +70,7 @@ disables this rollout adds never trip a rule.
 Reports a reference the reader cannot follow from the repo. Two message IDs:
 
 - `ticket` — `\b[A-Z][A-Z0-9]{1,9}-\d+\b`, case-sensitive, where the prefix is
-  not one of `UTC UTF ISO RFC CVE GHSA SHA AES RGB LICENSE`. No URL exemption
+  not one of `UTC GMT UTF ISO RFC CVE GHSA SHA AES RGB LICENSE`. No URL exemption
   (Jira links contain the ID and are caught). No `TODO(ABC-123)` exemption.
   Message: `Comment references ticket "{{match}}". Put ticket links in the
   commit or PR, and state the reason here.`
@@ -89,13 +89,14 @@ Reports a reference the reader cannot follow from the repo. Two message IDs:
 
 Case-insensitive phrase match with non-alphanumeric boundaries on both sides.
 
-Phrases (windbag's list, minus `no longer`, plus Canopy additions):
+Phrases (windbag's list, minus `no longer`, `used to be`, `previously was`,
+and `was broken`, plus Canopy additions):
 
 ```
-was missing, used to be, previously was, previously did, previously had,
+was missing, previously did, previously had,
 before this fix, before this change, before this commit, before this pr,
 never actually, have never, root-caused, root caused, this fix, this bug,
-the bug was, was broken, now correctly, silently no-ops, silently noops,
+the bug was, now correctly, silently no-ops, silently noops,
 silently fails, silently skips, silently swallows,
 used to come, we used to, after the rename, before the fix, after the fix,
 this pr, this pull request, an earlier version, previous implementation,

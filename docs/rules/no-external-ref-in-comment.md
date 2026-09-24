@@ -12,7 +12,7 @@ only a URL, and the reason text of a directive comment (`// eslint-disable-line
 rule -- reason`) — for two kinds of unreachable reference.
 
 **`ticket`** matches `\b[A-Z][A-Z0-9]{1,9}-\d+\b`, case-sensitive, unless the
-prefix is one of `UTC UTF ISO RFC CVE GHSA SHA AES RGB LICENSE`. There is no
+prefix is one of `UTC GMT UTF ISO RFC CVE GHSA SHA AES RGB LICENSE`. There is no
 `TODO(ABC-123)` exemption and no URL exemption — a Jira link is caught through
 the ticket ID it contains (`.../browse/TRFORMS-478` still matches `TRFORMS-478`).
 
@@ -36,9 +36,9 @@ checked, so each group produces at most one report.
 
 ## What is not reported
 
-- The denylisted uppercase prefixes (`UTC-8`, `UTF-8`, `RFC-6902`, `CVE-2021-44228`,
-  and the rest) — these are ticket-shaped but are standards and identifiers, not
-  tickets.
+- The denylisted uppercase prefixes (`UTC-8`, `GMT-0700`, `UTF-8`, `RFC-6902`,
+  `CVE-2021-44228`, and the rest) — these are ticket-shaped but are standards and
+  identifiers, not tickets.
 - An upstream issue URL with no ALLCAPS-NUMBER token, such as a GitHub issue
   link (`.../issues/16265`).
 - `README.md`, `CHANGELOG.md`, and `CONTRIBUTING.md` — files that ship with the
@@ -92,6 +92,8 @@ const a = 1;
 // but Monday 11 PM in US/Pacific (UTC-8)
 
 // decoded as UTF-8 before hashing
+
+// the fixture timestamp is 09:00 GMT-0700
 
 // Licensed under https://www.apache.org/licenses/LICENSE-2.0
 

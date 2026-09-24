@@ -11,6 +11,9 @@ ruleTester.run('no-history-in-comment', rule, {
     { code: `// Used to prevent double borders on right sticky columns` },
     { code: `// get the previously shared/sent information for a file` },
     { code: `// covers this bugfix path` },
+    { code: `//if there used to be a recurrence, and they want to remove it, add the when object back` },
+    { code: `//previously was selected, now it's not, so filter it out` },
+    { code: `// the link was broken or the task was created with recurrence, so make a template` },
     { code: `// @ts-ignore\nconst a = 1;` },
   ],
   invalid: [

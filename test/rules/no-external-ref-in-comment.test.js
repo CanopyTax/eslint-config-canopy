@@ -9,6 +9,7 @@ ruleTester.run('no-external-ref-in-comment', rule, {
   valid: [
     { code: `// but Monday 11 PM in US/Pacific (UTC-8)` },
     { code: `// decoded as UTF-8 before hashing` },
+    { code: `// the fixture timestamp is 09:00 GMT-0700` },
     { code: `// Licensed under https://www.apache.org/licenses/LICENSE-2.0` },
     { code: `// see RFC-6902 for the patch format, and CVE-2021-44228` },
     // Upstream issue links carry no ALLCAPS-NUMBER token.

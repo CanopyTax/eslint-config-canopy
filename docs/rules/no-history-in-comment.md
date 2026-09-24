@@ -17,10 +17,10 @@ come` does not match inside a longer word.
 Phrase list:
 
 ```
-was missing, used to be, previously was, previously did, previously had,
+was missing, previously did, previously had,
 before this fix, before this change, before this commit, before this pr,
 never actually, have never, root-caused, root caused, this fix, this bug,
-the bug was, was broken, now correctly, silently no-ops, silently noops,
+the bug was, now correctly, silently no-ops, silently noops,
 silently fails, silently skips, silently swallows,
 used to come, we used to, after the rename, before the fix, after the fix,
 this pr, this pull request, an earlier version, previous implementation,
@@ -45,6 +45,11 @@ runtime state or purpose rather than history:
 
 Listing them would have made the rule noisy on exactly the comments that are
 already stating a fact about the code.
+
+A fleet calibration pass (2026-09-23) dropped three more phrase variants for
+the same reason: each one, in practice, mostly described a present condition
+of some record or state rather than a change that happened to the code, so
+keeping them denylisted cost more true comments than it caught narration.
 
 ## Examples of incorrect code for this rule
 

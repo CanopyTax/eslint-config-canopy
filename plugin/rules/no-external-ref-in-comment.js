@@ -2,7 +2,7 @@ import { getCommentGroups } from '../utils/comment-groups.js';
 import { getContentText } from '../utils/comment-text.js';
 
 // Uppercase prefixes that form ticket-shaped tokens without being tickets.
-const NOT_TICKET_PREFIXES = new Set(['UTC', 'UTF', 'ISO', 'RFC', 'CVE', 'GHSA', 'SHA', 'AES', 'RGB', 'LICENSE']);
+const NOT_TICKET_PREFIXES = new Set(['UTC', 'GMT', 'UTF', 'ISO', 'RFC', 'CVE', 'GHSA', 'SHA', 'AES', 'RGB', 'LICENSE']);
 const TICKET_RE = /\b([A-Z][A-Z0-9]{1,9})-\d+\b/g;
 
 // Committed docs a reader can open from the repo. Any other .md file is assumed

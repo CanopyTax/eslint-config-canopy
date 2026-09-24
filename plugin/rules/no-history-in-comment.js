@@ -2,13 +2,13 @@ import { getCommentGroups } from '../utils/comment-groups.js';
 import { getContentText, phraseMatcher } from '../utils/comment-text.js';
 
 // Phrases were checked against fleet comments before inclusion. "no longer",
-// "used to", and "previously" are left out: in this codebase they mostly
-// describe runtime state or purpose, not history.
+// "used to", "previously", and a few close variants dropped in a later fleet
+// pass are left out: they mostly describe runtime state, not history.
 const HISTORY_PHRASES = [
-  'was missing', 'used to be', 'previously was', 'previously did', 'previously had',
+  'was missing', 'previously did', 'previously had',
   'before this fix', 'before this change', 'before this commit', 'before this pr',
   'never actually', 'have never', 'root-caused', 'root caused', 'this fix', 'this bug',
-  'the bug was', 'was broken', 'now correctly', 'silently no-ops', 'silently noops',
+  'the bug was', 'now correctly', 'silently no-ops', 'silently noops',
   'silently fails', 'silently skips', 'silently swallows',
   'used to come', 'we used to', 'after the rename', 'before the fix', 'after the fix',
   'this pr', 'this pull request', 'an earlier version', 'previous implementation', 'the old code',
