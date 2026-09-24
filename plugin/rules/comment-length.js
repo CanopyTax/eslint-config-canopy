@@ -53,7 +53,7 @@ export default {
             const { value } = group.comments[0];
             if (value.startsWith('*') && JSDOC_TAG_RE.test(value)) continue;
           }
-          check(group.text, group.loc);
+          check(group.text.trim(), group.loc);
         }
       },
     };
