@@ -1,17 +1,19 @@
 {
   "name": "eslint-config-canopy",
-  "version": "5.4.0",
+  "version": "5.5.0",
   "description": "A standard eslint configuration for Canopy frontend developers",
   "main": "eslint.config.js",
   "type": "module",
   "exports": {
     ".": "./eslint.config.js",
     "./eslint.config.js": "./eslint.config.js",
-    "./plugin": "./plugin/index.js"
+    "./plugin": "./plugin/index.js",
+    "./design-system": "./design-system.js"
   },
   "files": [
     "eslint.config.js",
-    "plugin"
+    "plugin",
+    "design-system.js"
   ],
   "scripts": {
     "lint": "eslint .",
@@ -23,6 +25,7 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
+    "@shadcn/lint": "0.1.0",
     "@typescript-eslint/eslint-plugin": "^8.27.0",
     "@typescript-eslint/parser": "^8.27.0",
     "eslint-plugin-import": "^2.31.0",
@@ -37,7 +40,7 @@
     "typescript": ">=5.0.0"
   },
   "devDependencies": {
-    "eslint": "^9.22.0",
+    "eslint": "^9.30.0",
     "typescript": "^5.8.2"
   },
   "packageManager": "yarn@4.14.1"
