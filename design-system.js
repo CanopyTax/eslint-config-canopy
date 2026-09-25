@@ -40,11 +40,11 @@ export default [
       },
     },
     rules: {
-      'shadcn/no-restyle': ['warn', { allow: ['layout', ...nonTailwindClasses], contracts: containerContracts }],
-      'shadcn/no-raw-colors': ['warn', { allow: understoryScales }],
+      'shadcn/no-restyle': ['error', { allow: ['layout', ...nonTailwindClasses], contracts: containerContracts }],
+      'shadcn/no-raw-colors': ['error', { allow: understoryScales }],
       // canopy/no-hardcoded-font-size owns text-[...] sizes. Grid templates
       // have no scale to fall back on.
-      'shadcn/no-arbitrary-values': ['warn', { allow: [...cpColorVars, 'text-[*', 'grid-cols-[*', 'grid-rows-[*'] }],
+      'shadcn/no-arbitrary-values': ['error', { allow: [...cpColorVars, 'text-[*', 'grid-cols-[*', 'grid-rows-[*'] }],
     },
   },
 ];

@@ -107,9 +107,12 @@ are read from `className` and from the arguments to `tw`, `always`, `maybe` and 
 
 | Rule | Level | Reports |
 | --- | --- | --- |
-| `shadcn/no-restyle` | `warn` | A `className` on an Understory component that changes more than its layout. Margin, width and position are allowed; padding, color and typography are not. |
-| `shadcn/no-raw-colors` | `warn` | Tailwind palette colors such as `bg-blue-500`. |
-| `shadcn/no-arbitrary-values` | `warn` | Arbitrary values such as `w-[137px]`. |
+| `shadcn/no-restyle` | `error` | A `className` on an Understory component that changes more than its layout. Margin, width and position are allowed; padding, color and typography are not. |
+| `shadcn/no-raw-colors` | `error` | Tailwind palette colors such as `bg-blue-500`. |
+| `shadcn/no-arbitrary-values` | `error` | Arbitrary values such as `w-[137px]`. |
+
+All three report at `error`, so a repo that turns on the export must fix its findings first
+or turn off individual rules in its own `eslint.config`.
 
 These are allowed. The color and arbitrary-value exceptions apply to `no-raw-colors` and
 `no-arbitrary-values` only; on an Understory component, `no-restyle` still reports a color class.
