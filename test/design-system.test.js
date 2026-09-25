@@ -50,8 +50,12 @@ test('no-raw-colors: a default palette color inside tw() is reported', () => {
   assert.equal(lint('shadcn/no-raw-colors', 'tw("bg-pink-500")').length, 1);
 });
 
-test('no-raw-colors: Understory gray and brand scales are allowed', () => {
-  assert.deepEqual(lint('shadcn/no-raw-colors', '<div className="bg-gray-50 text-brand-500" />'), []);
+test('no-raw-colors: the Understory gray scale is allowed', () => {
+  assert.deepEqual(lint('shadcn/no-raw-colors', '<div className="bg-gray-50" />'), []);
+});
+
+test('no-raw-colors: brand is not a Tailwind palette name, so it is not reported', () => {
+  assert.deepEqual(lint('shadcn/no-raw-colors', '<div className="text-brand-500" />'), []);
 });
 
 test('no-arbitrary-values: an arbitrary padding is reported', () => {
