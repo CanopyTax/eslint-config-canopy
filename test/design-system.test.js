@@ -125,6 +125,6 @@ test('no-arbitrary-values: an arbitrary padding inside tw() is reported', () => 
 });
 
 test('no-arbitrary-values: text sizes, grid templates and --cp-color-* variables are allowed', () => {
-  const classes = 'text-[13px] grid-cols-[1fr_2fr] bg-[var(--cp-color-app-border)]';
+  const classes = 'text-[13px] grid-cols-[1fr_2fr] grid-rows-[auto_1fr] bg-[var(--cp-color-app-border)]';
   assert.deepEqual(lint('shadcn/no-arbitrary-values', `<div className="${classes}" />`), []);
 });
