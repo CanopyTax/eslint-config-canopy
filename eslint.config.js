@@ -109,6 +109,11 @@ export default [
       'canopy/require-subscribe-cleanup': 'warn',
       'canopy/require-subscribe-error-handler': 'warn',
       'canopy/comment-length': 'error',
+      'canopy/no-external-ref-in-comment': 'error',
+      'canopy/no-history-in-comment': 'error',
+      'canopy/no-hedge-in-comment': 'error',
+      'canopy/no-banner-comment': 'error',
+      'canopy/no-obvious-comment': 'warn',
 
       // fetcher!sofe adds auth headers, CSRF, tenant context, error routing and Sentry
       // breadcrumbs; raw fetch and axios get none. Built-in rather than custom because
