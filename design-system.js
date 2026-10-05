@@ -1,4 +1,5 @@
 import { plugin as shadcn } from '@shadcn/lint';
+import canopy from './plugin/index.js';
 
 // Global classes that Tailwind does not generate: Understory's cp-* utilities
 // and the legacy canopy-styleguide cps-* classes.
@@ -27,7 +28,9 @@ const containerContracts = [
 export default [
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
-    plugins: { shadcn },
+    // The same canopy plugin object the base config registers, so the two
+    // configs can be combined without a plugin conflict.
+    plugins: { shadcn, canopy },
     settings: {
       shadcn: {
         componentImports: ['^@canopytax/understory(/|$)'],
@@ -43,6 +46,8 @@ export default [
       // canopy/no-hardcoded-font-size owns text-[...] sizes. Grid templates
       // have no scale to fall back on.
       'shadcn/no-arbitrary-values': ['error', { allow: [...cpColorVars, 'text-[*', 'grid-cols-[*', 'grid-rows-[*'] }],
+      // A design convention for copy rather than styling, so it warns.
+      'canopy/placeholder-format': 'warn',
     },
   },
 ];

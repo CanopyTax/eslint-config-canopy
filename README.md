@@ -110,8 +110,9 @@ are read from `className` and from the arguments to `tw`, `always`, `maybe` and 
 | `shadcn/no-restyle` | `error` | A `className` on an Understory component that changes more than its layout. Margin, width and position are allowed; padding, color and typography are not. |
 | `shadcn/no-raw-colors` | `error` | Tailwind palette colors such as `bg-blue-500`. |
 | `shadcn/no-arbitrary-values` | `error` | Arbitrary values such as `w-[137px]`. |
+| [`canopy/placeholder-format`](docs/rules/placeholder-format.md) | `warn` | A `placeholder` on `input`, `textarea`, `CpInput`, `CpTextarea` or their Field variants that ends in an ellipsis (`Search...`) or is not sentence case (`Describe A Task`). The ellipsis is auto-fixable. Proper nouns can be exempted with `allowWords`. |
 
-All three report at `error`, so a repo that turns on the export must fix its findings first
+The three `shadcn` rules report at `error`, so a repo that turns on the export must fix its findings first
 or turn off individual rules in its own `eslint.config`.
 
 These are allowed. The color and arbitrary-value exceptions apply to `no-raw-colors` and
