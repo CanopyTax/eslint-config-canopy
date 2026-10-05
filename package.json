@@ -25,15 +25,15 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@shadcn/lint": "0.1.0",
-    "@typescript-eslint/eslint-plugin": "^8.27.0",
-    "@typescript-eslint/parser": "^8.27.0",
+    "@shadcn/lint": "0.2.0",
+    "@typescript-eslint/eslint-plugin": "^8.40.0",
+    "@typescript-eslint/parser": "^8.40.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-unused-imports": "^4.1.4",
     "globals": "^16.0.0",
-    "typescript-eslint": "^8.27.0"
+    "typescript-eslint": "^8.40.0"
   },
   "peerDependencies": {
     "eslint": ">=9.0.0",
