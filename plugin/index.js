@@ -14,6 +14,7 @@ import noHistoryInComment from './rules/no-history-in-comment.js';
 import noHedgeInComment from './rules/no-hedge-in-comment.js';
 import noBannerComment from './rules/no-banner-comment.js';
 import noObviousComment from './rules/no-obvious-comment.js';
+import placeholderFormat from './rules/placeholder-format.js';
 
 const plugin = {
   meta: {
@@ -36,6 +37,7 @@ const plugin = {
     'no-hedge-in-comment': noHedgeInComment,
     'no-banner-comment': noBannerComment,
     'no-obvious-comment': noObviousComment,
+    'placeholder-format': placeholderFormat,
   },
 };
 
