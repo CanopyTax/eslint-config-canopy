@@ -146,6 +146,18 @@ test('placeholder-format: Understory fields, Field variants and subcomponents ar
   }
 });
 
+test('placeholder-format: the CpSelect family and its Field variants are checked', () => {
+  const tags = ['CpSelectSingle', 'CpSelectSingleField', 'CpSelectMulti', 'CpSelectMultiField', 'CpSelectMultiInput', 'CpSelectMultiInputField', 'CpSelectMultiPills', 'CpSelectMultiPillsField'];
+  for (const tag of tags) {
+    const ids = lint('canopy/placeholder-format', `<${tag} placeholder="Select One..." />`).map((m) => m.messageId);
+    assert.deepEqual(ids.sort(), ['notSentenceCase', 'trailingEllipsis'], tag);
+  }
+});
+
+test('placeholder-format: a sentence-case select placeholder is allowed', () => {
+  assert.deepEqual(lint('canopy/placeholder-format', '<CpSelectMulti placeholder="Select people" />'), []);
+});
+
 test('placeholder-format: a placeholder in an expression container is checked', () => {
   assert.equal(lint('canopy/placeholder-format', '<CpInput placeholder={"Search..."} />').length, 1);
   assert.equal(lint('canopy/placeholder-format', '<CpInput placeholder={`Search...`} />').length, 1);
@@ -177,7 +189,7 @@ test('placeholder-format: sentence case, acronyms, mixed-case names and example 
 test('placeholder-format: dynamic placeholders and other elements are not checked', () => {
   assert.deepEqual(lint('canopy/placeholder-format', '<CpInput placeholder={label} />'), []);
   assert.deepEqual(lint('canopy/placeholder-format', '<CpInput placeholder={`${label}...`} />'), []);
-  assert.deepEqual(lint('canopy/placeholder-format', '<CpSelectSingle placeholder="Select One..." />'), []);
+  assert.deepEqual(lint('canopy/placeholder-format', '<CpSelect placeholder="Select One..." />'), []);
 });
 
 test('placeholder-format: allowWords exempts proper nouns', () => {

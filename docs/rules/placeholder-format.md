@@ -13,6 +13,8 @@ This rule checks the `placeholder` attribute on:
 - the native `<input>` and `<textarea>` elements
 - Understory's `CpInput`, `CpInputField`, `CpTextarea` and `CpTextareaField`,
   including subcomponents such as `CpInput.Email` and `CpInputField.PhoneNumber`
+- Understory's `CpSelectSingle`, `CpSelectMulti`, `CpSelectMultiInput` and
+  `CpSelectMultiPills`, and their Field variants (`CpSelectSingleField` and so on)
 
 It reports:
 
@@ -36,6 +38,7 @@ Examples of **incorrect** code for this rule:
 <CpInputField placeholder="describe a task" />;
 <CpTextarea placeholder={"Search Clients..."} />;
 <CpInput.Email placeholder="Enter Email Address" />;
+<CpSelectSingle placeholder="Select One..." />;
 ```
 
 Examples of **correct** code for this rule:
@@ -45,6 +48,7 @@ Examples of **correct** code for this rule:
 
 <CpInput placeholder="Describe a task" />;
 <CpInput placeholder="Search" />;
+<CpSelectMulti placeholder="Select people" />;
 
 // Acronyms and mixed-case names keep their capitals
 <CpInput placeholder="Search by ID" />;
@@ -81,8 +85,8 @@ Words that may be capitalized anywhere, such as product or company names.
   as in `Plan A`.
 - **Dynamic placeholders.** Variables, translation calls and template literals
   with expressions cannot be resolved.
-- **Other components.** Selects and date pickers have their own placeholder
-  patterns and are not checked.
+- **Other components.** Date pickers and the deprecated `CpSelect` are not
+  checked.
 
 ## When Not To Use It
 

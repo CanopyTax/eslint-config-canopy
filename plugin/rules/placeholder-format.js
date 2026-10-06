@@ -1,7 +1,20 @@
 // Native fields are matched by tag; Understory fields by their root name, so
 // subcomponents such as `CpInput.Email` and `CpInputField.PhoneNumber` count too.
 const NATIVE_FIELDS = new Set(['input', 'textarea']);
-const UNDERSTORY_FIELDS = new Set(['CpInput', 'CpInputField', 'CpTextarea', 'CpTextareaField']);
+const UNDERSTORY_FIELDS = new Set([
+  'CpInput',
+  'CpInputField',
+  'CpTextarea',
+  'CpTextareaField',
+  'CpSelectSingle',
+  'CpSelectSingleField',
+  'CpSelectMulti',
+  'CpSelectMultiField',
+  'CpSelectMultiInput',
+  'CpSelectMultiInputField',
+  'CpSelectMultiPills',
+  'CpSelectMultiPillsField',
+]);
 
 const TRAILING_ELLIPSIS_RE = /\s*(?:\.{3}|…)\s*$/;
 
@@ -90,7 +103,7 @@ export default {
     type: 'suggestion',
     docs: {
       description:
-        'Require input and textarea placeholders to be sentence case with no trailing ellipsis, on native fields and Understory CpInput / CpTextarea and their Field variants.',
+        'Require input, textarea and select placeholders to be sentence case with no trailing ellipsis, on native fields and Understory CpInput / CpTextarea / CpSelect* and their Field variants.',
       url: 'https://github.com/CanopyTax/eslint-config-canopy/blob/master/docs/rules/placeholder-format.md',
     },
     fixable: 'code',
