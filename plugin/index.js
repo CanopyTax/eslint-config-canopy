@@ -9,6 +9,7 @@ import requireStaleTimeInUseQuery from './rules/require-staletime-in-usequery.js
 import requireSubscribeCleanup from './rules/require-subscribe-cleanup.js';
 import requireSubscribeErrorHandler from './rules/require-subscribe-error-handler.js';
 import commentLength from './rules/comment-length.js';
+import placeholderFormat from './rules/placeholder-format.js';
 
 const plugin = {
   meta: {
@@ -26,6 +27,7 @@ const plugin = {
     'require-subscribe-cleanup': requireSubscribeCleanup,
     'require-subscribe-error-handler': requireSubscribeErrorHandler,
     'comment-length': commentLength,
+    'placeholder-format': placeholderFormat,
   },
 };
 
