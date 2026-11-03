@@ -25,6 +25,9 @@ const containerContracts = [
   { pattern: '^(CpModalBody|CpModalFooter|CpOverlayBody)$', allow: ['layout', 'gap-*', 'gap-x-*', 'gap-y-*', ...nonTailwindClasses] },
 ];
 
+// Canopy and the integrations its placeholders name.
+const placeholderAllowWords = ['Canopy', 'QuickBooks', 'Salesforce', 'Zuora'];
+
 // Opt-in design-system rules for repos that render Understory components.
 // Usage: export default [...canopyConfig, ...canopyDesignSystem];
 export default [
@@ -48,7 +51,7 @@ export default [
       // canopy/no-hardcoded-font-size owns text-[...] sizes. Grid templates
       // have no scale to fall back on.
       'shadcn/no-arbitrary-values': ['error', { allow: [...cpColorVars, 'text-[*', 'grid-cols-[*', 'grid-rows-[*'] }],
-      'canopy/placeholder-format': 'warn',
+      'canopy/placeholder-format': ['warn', { allowWords: placeholderAllowWords }],
     },
   },
 ];

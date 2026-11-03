@@ -61,6 +61,13 @@ Examples of **correct** code for this rule:
 // A new sentence starts with a capital
 <CpTextarea placeholder="Optional. Add a note" />;
 
+// Leading dashes and brackets are decoration, so `Select` starts the sentence
+<CpSelectSingle placeholder="- Select -" />;
+<CpSelectSingle placeholder="-- Choose a category --" />;
+
+// Day and month names keep their capital
+<CpSelectMulti placeholder="Select weekdays, Mondays or Fridays" />;
+
 // Not statically resolvable
 <CpInput placeholder={label} />;
 <CpInput placeholder={t("search")} />;
@@ -76,6 +83,10 @@ Words that may be capitalized anywhere, such as product or company names.
 "canopy/placeholder-format": ["warn", { allowWords: ["Canopy", "Stripe"] }]
 ```
 
+The `design-system` export sets `allowWords` to `Canopy`, `QuickBooks`,
+`Salesforce` and `Zuora`. Setting the option in your own config replaces that
+list, so include those words if you still want them.
+
 ## What is not reported
 
 - **Words that are not plain words.** Only letters with optional apostrophes or
@@ -83,12 +94,19 @@ Words that may be capitalized anywhere, such as product or company names.
 - **All-caps and mixed-case words.** `ID`, `EIN` and `QuickBooks` are not title
   case. `I` is allowed, and so is a single capital letter at the end of the text,
   as in `Plan A`.
+- **Day and month names**, such as `Monday`, `Mondays`, `Tues` and `January`.
+- **Leading decoration.** Dashes, brackets, parentheses, quotes and bullets before
+  the first word are skipped, so the first word is still checked as the start of
+  a sentence.
 - **Dynamic placeholders.** Variables, translation calls and template literals
   with expressions cannot be resolved.
 - **Other components.** Date pickers and the deprecated `CpSelect` are not
   checked.
 
 ## When Not To Use It
+
+The rule does not detect people's or companies' names. Example data such as
+`Dunder Mifflin` is reported.
 
 If a field's placeholder must show a proper noun the rule flags, add the word to
 `allowWords` instead of turning the rule off.
