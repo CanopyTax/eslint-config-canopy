@@ -129,7 +129,8 @@ These are allowed. The color and arbitrary-value exceptions apply to `no-raw-col
 | The `gray` scale, such as `bg-gray-100` | Understory's `theme.css` maps `gray` onto its own variables, but the name collides with Tailwind's default `gray`, so `no-raw-colors` would otherwise report it. Understory's `brand`, `error`, `warning` and `success` scales are not Tailwind palette names and are never reported. |
 | `text-[…]` | Sizes are checked by `canopy/no-hardcoded-font-size`. |
 | `grid-cols-[…]` and `grid-rows-[…]` | Grid templates have no scale to use instead. |
-| Padding and gap on `CpWell`, `CpCard`, `CpCardBody`, `CpCardHeader`, `CpCardFooter`, `CpArea` | These containers leave their spacing to the caller. |
+| Padding and gap on `CpWell`, `CpCard`, `CpCardBody`, `CpCardHeader`, `CpCardFooter` | These containers leave their spacing to the caller. |
+| Any class on `CpArea` | `CpArea` has no styling of its own, so the caller styles it. |
 | Gap, but not padding, on `CpModalBody`, `CpModalFooter`, `CpOverlayBody` | These sections set their own padding. Gap only spaces their children. |
 
 Not included yet:

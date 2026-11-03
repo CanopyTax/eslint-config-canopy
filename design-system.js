@@ -16,7 +16,9 @@ const understoryGray = colorUtilities.map((u) => `${u}-gray-*`);
 
 // Containers whose padding and gap belong to the caller.
 const containerContracts = [
-  { pattern: '^(CpWell|CpCard|CpCardBody|CpCardHeader|CpCardFooter|CpArea)$', allow: ['layout', 'spacing', ...nonTailwindClasses] },
+  { pattern: '^(CpWell|CpCard|CpCardBody|CpCardHeader|CpCardFooter)$', allow: ['layout', 'spacing', ...nonTailwindClasses] },
+  // CpArea has no styling of its own, so the caller styles it.
+  { pattern: '^CpArea$', allow: ['*'] },
   // Modal and overlay sections keep their own padding, but gap only spaces
   // their children.
   { pattern: '^(CpModalBody|CpModalFooter|CpOverlayBody)$', allow: ['layout', 'gap-*', 'gap-x-*', 'gap-y-*', ...nonTailwindClasses] },

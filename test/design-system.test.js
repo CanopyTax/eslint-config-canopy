@@ -16,7 +16,7 @@ const config = [
 
 function lint(ruleId, expression) {
   const code = [
-    `import { CpButton, CpCard, CpWell, CpModal, CpModalBody, CpModalFooter, CpOverlayBody } from '@canopytax/understory';`,
+    `import { CpArea, CpButton, CpCard, CpWell, CpModal, CpModalBody, CpModalFooter, CpOverlayBody } from '@canopytax/understory';`,
     `import { Button } from './button';`,
     `import { tw, maybe } from './classname-helpers';`,
     `const isActive = true;`,
@@ -54,6 +54,21 @@ test('no-restyle: padding and gap on CpWell are allowed', () => {
 
 test('no-restyle: a color class on CpWell is reported', () => {
   assert.equal(lint('shadcn/no-restyle', '<CpWell className="bg-gray-100" />').length, 1);
+});
+
+test('no-restyle: color, border, shape, effect and variant classes on CpArea are allowed', () => {
+  assert.deepEqual(
+    lint('shadcn/no-restyle', '<CpArea className="bg-gray-100 border rounded-lg shadow-sm hover:bg-gray-200 cursor-pointer text-sm clickable-row" />'),
+    [],
+  );
+});
+
+test('no-raw-colors: a default palette color on CpArea is reported', () => {
+  assert.equal(lint('shadcn/no-raw-colors', '<CpArea className="bg-red-500" />').length, 1);
+});
+
+test('no-arbitrary-values: an arbitrary padding on CpArea is reported', () => {
+  assert.equal(lint('shadcn/no-arbitrary-values', '<CpArea className="p-[13px]" />').length, 1);
 });
 
 test('no-restyle: gap on CpModalFooter is allowed', () => {
