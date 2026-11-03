@@ -20,12 +20,12 @@ const TRAILING_ELLIPSIS_RE = /\s*(?:\.{3}|…)\s*$/;
 
 // Punctuation that can wrap a word without making it something other than a word.
 const WRAPPING_PUNCTUATION_RE = /^["'“‘([\-–—]+|["'”’)\],;:.?!\-–—]+$/g;
-// Dashes and brackets around a placeholder, as in `- Select -`, are decoration:
+// Dashes, brackets and quotes around a placeholder, as in `- Select -`, are decoration:
 // the word after them still starts the sentence.
-const DECORATION_RE = /^[-–—([{"'“‘•*]+$/;
+const DECORATION_RE = /^[-–—()[\]{}"'“”‘’•*]+$/;
 // Day and month names are proper nouns, so they keep their capital anywhere.
 const CALENDAR_WORD_RE =
-  /^(?:(?:Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)days?|(?:January|February|March|April|May|June|July|August|September|October|November|December)s?|Mon|Tues?|Wed|Thur?s?|Fri|Sat|Sun|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept?|Oct|Nov|Dec)$/;
+  /^(?:(?:Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)days?|Januar(?:y|ies)|Februar(?:y|ies)|(?:March|April|May|June|July|August|September|October|November|December)s?|Mon|Tues?|Wed|Thu(?:rs?)?|Fri|Sat|Sun|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept?|Oct|Nov|Dec)$/;
 // Letters with optional apostrophes or hyphens. Anything else (an email, a date
 // mask, a number) is example data, not prose, and is left alone.
 const PLAIN_WORD_RE = /^[A-Za-z]+(?:['’-][A-Za-z]+)*$/;

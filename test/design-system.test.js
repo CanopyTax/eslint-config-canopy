@@ -247,6 +247,25 @@ test('placeholder-format: weekday and month names keep their capital', () => {
   }
 });
 
+test('placeholder-format: closing brackets and quotes before the first word are decoration', () => {
+  for (const prefix of ['[]', '[ ]', '”', '’']) {
+    assert.deepEqual(lint('canopy/placeholder-format', `<CpInput placeholder="${prefix} Select" />`), [], prefix);
+    const [message] = lint('canopy/placeholder-format', `<CpInput placeholder="${prefix} select" />`);
+    assert.equal(message?.messageId, 'notSentenceCase', prefix);
+  }
+});
+
+test('placeholder-format: -ies month plurals keep their capital', () => {
+  for (const text of ['Compare Januaries', 'Compare Februaries']) {
+    assert.deepEqual(lint('canopy/placeholder-format', `<CpInput placeholder="${text}" />`), [], text);
+  }
+});
+
+test('placeholder-format: Thus mid-sentence is not treated as a weekday', () => {
+  const [message] = lint('canopy/placeholder-format', '<CpInput placeholder="Do this Thus" />');
+  assert.match(message.message, /Use "Do this thus"/);
+});
+
 test('placeholder-format: all-caps words are never lowercased', () => {
   for (const text of ['Client ID', 'Search Tenant ID', 'Upload a PDF', 'Enter EIN or SSN', 'Paste a URL']) {
     const messages = lint('canopy/placeholder-format', `<CpInput placeholder="${text}" />`);
