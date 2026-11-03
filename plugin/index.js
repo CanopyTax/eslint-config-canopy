@@ -9,6 +9,11 @@ import requireStaleTimeInUseQuery from './rules/require-staletime-in-usequery.js
 import requireSubscribeCleanup from './rules/require-subscribe-cleanup.js';
 import requireSubscribeErrorHandler from './rules/require-subscribe-error-handler.js';
 import commentLength from './rules/comment-length.js';
+import noExternalRefInComment from './rules/no-external-ref-in-comment.js';
+import noHistoryInComment from './rules/no-history-in-comment.js';
+import noHedgeInComment from './rules/no-hedge-in-comment.js';
+import noBannerComment from './rules/no-banner-comment.js';
+import noObviousComment from './rules/no-obvious-comment.js';
 
 const plugin = {
   meta: {
@@ -26,6 +31,11 @@ const plugin = {
     'require-subscribe-cleanup': requireSubscribeCleanup,
     'require-subscribe-error-handler': requireSubscribeErrorHandler,
     'comment-length': commentLength,
+    'no-external-ref-in-comment': noExternalRefInComment,
+    'no-history-in-comment': noHistoryInComment,
+    'no-hedge-in-comment': noHedgeInComment,
+    'no-banner-comment': noBannerComment,
+    'no-obvious-comment': noObviousComment,
   },
 };
 
