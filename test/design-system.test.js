@@ -217,6 +217,72 @@ test('placeholder-format: allowWords exempts proper nouns', () => {
   assert.deepEqual(new Linter().verify(code, linterConfig, 'component.jsx'), []);
 });
 
+test('placeholder-format: the first word after leading decoration is sentence-initial', () => {
+  for (const text of ['- Select -', '-- Choose a category --', '-- Select --', '- Select clients -', '— Select —', '(Select one)', '[ Select ]']) {
+    assert.deepEqual(lint('canopy/placeholder-format', `<CpInput placeholder="${text}" />`), [], text);
+  }
+});
+
+test('placeholder-format: a lowercase first word after leading decoration is reported', () => {
+  const [message] = lint('canopy/placeholder-format', '<CpInput placeholder="- select -" />');
+  assert.equal(message.messageId, 'notSentenceCase');
+  assert.match(message.message, /Use "- Select -"/);
+});
+
+test('placeholder-format: title case after leading decoration is still reported', () => {
+  const [message] = lint('canopy/placeholder-format', '<CpInput placeholder="-- Choose A Category --" />');
+  assert.match(message.message, /Use "-- Choose a category --"/);
+});
+
+test('placeholder-format: weekday and month names keep their capital', () => {
+  const placeholders = [
+    'Select weekdays, Mondays',
+    'Select weekdays, Mondays, Wednesdays and Fridays',
+    'Select weekdays, Mondays, or Tues',
+    'Starts in January',
+    'Every Friday in March',
+  ];
+  for (const text of placeholders) {
+    assert.deepEqual(lint('canopy/placeholder-format', `<CpInput placeholder="${text}" />`), [], text);
+  }
+});
+
+test('placeholder-format: closing brackets and quotes before the first word are decoration', () => {
+  for (const prefix of ['[]', '[ ]', '”', '’']) {
+    assert.deepEqual(lint('canopy/placeholder-format', `<CpInput placeholder="${prefix} Select" />`), [], prefix);
+    const [message] = lint('canopy/placeholder-format', `<CpInput placeholder="${prefix} select" />`);
+    assert.equal(message?.messageId, 'notSentenceCase', prefix);
+  }
+});
+
+test('placeholder-format: -ies month plurals keep their capital', () => {
+  for (const text of ['Compare Januaries', 'Compare Februaries']) {
+    assert.deepEqual(lint('canopy/placeholder-format', `<CpInput placeholder="${text}" />`), [], text);
+  }
+});
+
+test('placeholder-format: Thus mid-sentence is not treated as a weekday', () => {
+  const [message] = lint('canopy/placeholder-format', '<CpInput placeholder="Do this Thus" />');
+  assert.match(message.message, /Use "Do this thus"/);
+});
+
+test('placeholder-format: all-caps words are never lowercased', () => {
+  for (const text of ['Client ID', 'Search Tenant ID', 'Upload a PDF', 'Enter EIN or SSN', 'Paste a URL']) {
+    const messages = lint('canopy/placeholder-format', `<CpInput placeholder="${text}" />`);
+    for (const { message } of messages) assert.doesNotMatch(message, /Use ".*\b(?:id|pdf|ein|ssn|url)\b/, text);
+  }
+});
+
+test('placeholder-format: the design-system export allows Canopy product and integration names', () => {
+  for (const text of ['Enter Salesforce ID', 'Enter Zuora ID', 'Search Canopy', 'Connect to QuickBooks']) {
+    assert.deepEqual(lint('canopy/placeholder-format', `<CpInput placeholder="${text}" />`), [], text);
+  }
+});
+
+test('placeholder-format: example names that are not allowlisted are still reported', () => {
+  assert.equal(lint('canopy/placeholder-format', '<CpInput placeholder="Dunder Mifflin" />').length, 1);
+});
+
 test('placeholder-format: the ellipsis fix removes it and keeps the quotes', () => {
   const { output } = new Linter().verifyAndFix(`<CpInput placeholder='Search...' />;`, config, 'component.jsx');
   assert.equal(output, `<CpInput placeholder='Search' />;`);

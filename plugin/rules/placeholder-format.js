@@ -19,7 +19,13 @@ const UNDERSTORY_FIELDS = new Set([
 const TRAILING_ELLIPSIS_RE = /\s*(?:\.{3}|…)\s*$/;
 
 // Punctuation that can wrap a word without making it something other than a word.
-const WRAPPING_PUNCTUATION_RE = /^["'“‘(]+|["'”’),;:.?!]+$/g;
+const WRAPPING_PUNCTUATION_RE = /^["'“‘([\-–—]+|["'”’)\],;:.?!\-–—]+$/g;
+// Dashes, brackets and quotes around a placeholder, as in `- Select -`, are decoration:
+// the word after them still starts the sentence.
+const DECORATION_RE = /^[-–—()[\]{}"'“”‘’•*]+$/;
+// Day and month names are proper nouns, so they keep their capital anywhere.
+const CALENDAR_WORD_RE =
+  /^(?:(?:Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)days?|Januar(?:y|ies)|Februar(?:y|ies)|(?:March|April|May|June|July|August|September|October|November|December)s?|Mon|Tues?|Wed|Thu(?:rs?)?|Fri|Sat|Sun|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept?|Oct|Nov|Dec)$/;
 // Letters with optional apostrophes or hyphens. Anything else (an email, a date
 // mask, a number) is example data, not prose, and is left alone.
 const PLAIN_WORD_RE = /^[A-Za-z]+(?:['’-][A-Za-z]+)*$/;
@@ -72,14 +78,14 @@ function sentenceCased(text, allowWords) {
   let startsSentence = true;
 
   const result = words.map((token, index) => {
-    if (/^\s*$/.test(token)) return token;
+    if (/^\s*$/.test(token) || DECORATION_RE.test(token)) return token;
     const isLast = !words.slice(index + 1).some((t) => t.trim());
 
     const word = token.replace(WRAPPING_PUNCTUATION_RE, '');
     const atSentenceStart = startsSentence;
     startsSentence = /[.?!]["'”’)]*$/.test(token);
 
-    if (!PLAIN_WORD_RE.test(word) || allowWords.has(word)) return token;
+    if (!PLAIN_WORD_RE.test(word) || allowWords.has(word) || CALENDAR_WORD_RE.test(word)) return token;
 
     if (atSentenceStart) {
       if (!isLowercase(word)) return token;
