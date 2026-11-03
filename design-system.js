@@ -1,5 +1,5 @@
 import { plugin as shadcn } from '@shadcn/lint';
-import { plugin as canopy } from './plugin/index.js';
+import canopy from './plugin/index.js';
 
 // Global classes that Tailwind does not generate: Understory's cp-* utilities
 // and the legacy canopy-styleguide cps-* classes.
